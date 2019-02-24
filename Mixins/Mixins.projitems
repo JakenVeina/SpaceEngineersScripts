@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6c7713f4-cc99-4d04-b48d-5d1632e2260d</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Mixins</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundOperationResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundWorker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundWorkerSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BackgroundWorkerSettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BlockCollectionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BlockCollectionResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeCoverageExclusions.debug.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagedBlockCollectionHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagedBlockConfigLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagedBlockConfigManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DateTimeProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Deque.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EchoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoggerSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoggerSettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagedBlockSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagedBlockSettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagerSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ManagerSettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParseResult.cs" />
+  </ItemGroup>
+</Project>
