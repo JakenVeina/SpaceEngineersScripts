@@ -111,6 +111,12 @@ namespace IngameScript
 
             private void ScheduleRecurringOperations()
             {
+                if(RecurringOperations.Count == 0)
+                {
+                    _gridProgramRuntimeInfo.UpdateFrequency = UpdateFrequency.None;
+                    return;
+                }
+
                 var now = _dateTimeProvider.Now;
 
                 var nextRecurringOperation = DateTime.MaxValue;

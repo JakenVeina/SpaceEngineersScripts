@@ -215,6 +215,17 @@ namespace Mixins.Test
 
         #region ExecuteOperations() Tests
 
+        public void ExecuteOperations_RecurringOperationsIsEmpty_CancelsUpdates()
+        {
+            var testContext = new TestContext();
+
+            testContext.Uut.ExecuteOperations();
+
+            testContext.MockGridProgramRuntimeInfo.ShouldHaveReceivedSet(x => x.UpdateFrequency = UpdateFrequency.None);
+
+            testContext.Uut.ScheduledOperations.ShouldBeEmpty();
+        }
+
         [TestCase(0,  1)]
         [TestCase(0,  10)]
         [TestCase(1,  1)]
