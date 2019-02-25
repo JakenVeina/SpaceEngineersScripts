@@ -87,7 +87,7 @@ namespace AutomatedDockingProcedures.Test
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDisableOperation_FunctionalBlocksIsNotEmpty_LocksEachFunctionalBlock(int functionalBlockCount)
+        public void MakeDisableOperation_FunctionalBlocksIsNotEmpty_DisablesEachFunctionalBlock(int functionalBlockCount)
         {
             var testContext = new TestContext();
 
@@ -156,7 +156,7 @@ namespace AutomatedDockingProcedures.Test
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeEnableOperation_FunctionalBlocksIsNotEmpty_UnlocksEachFunctionalBlock(int functionalBlockCount)
+        public void MakeEnableOperation_FunctionalBlocksIsNotEmpty_EnablesEachFunctionalBlock(int functionalBlockCount)
         {
             var testContext = new TestContext();
 
