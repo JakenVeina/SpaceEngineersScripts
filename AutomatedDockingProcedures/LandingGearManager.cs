@@ -82,7 +82,7 @@ namespace IngameScript
                     _onDisposed.Invoke();
                 }
 
-                protected abstract void OnExecuting(IMyLandingGear connector);
+                protected abstract void OnExecuting(IMyLandingGear landingGear);
 
                 private void Reset()
                     => _landingGearIndex = 0;
@@ -99,8 +99,8 @@ namespace IngameScript
                 public LockOperation(LandingGearManager owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
-                protected override void OnExecuting(IMyLandingGear connector)
-                    => connector.Lock();
+                protected override void OnExecuting(IMyLandingGear landingGear)
+                    => landingGear.Lock();
             }
 
             private sealed class UnlockOperation : LandingGearOperationBase
@@ -108,8 +108,8 @@ namespace IngameScript
                 public UnlockOperation(LandingGearManager owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
-                protected override void OnExecuting(IMyLandingGear connector)
-                    => connector.Unlock();
+                protected override void OnExecuting(IMyLandingGear landingGear)
+                    => landingGear.Unlock();
             }
         }
     }
