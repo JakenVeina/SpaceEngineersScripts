@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionalBlockManagerTests.cs" />
     <Compile Include="LandingGearManagerTests.cs" />
     <Compile Include="ConnectorManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
