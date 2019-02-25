@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="ConnectorManager.cs" />
     <Compile Include="FunctionalBlockManager.cs" />
+    <Compile Include="BatteryBlockManager.cs" />
     <Compile Include="LandingGearManager.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options">
