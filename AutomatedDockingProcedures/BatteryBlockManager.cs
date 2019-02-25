@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public interface IBatteryManager
+        public interface IBatteryBlockManager
         {
             IReadOnlyList<IMyBatteryBlock> BatteryBlocks { get; }
 
@@ -20,7 +20,7 @@ namespace IngameScript
             IBackgroundOperation MakeDischargeOperation();
         }
 
-        public class BatteryBlockManager : IBatteryManager
+        public class BatteryBlockManager : IBatteryBlockManager
         {
             public BatteryBlockManager()
             {
