@@ -276,7 +276,7 @@ namespace Mixins.Test
                 mockMatureRecurringOperation.ShouldNotHaveReceived(x => x.Execute(It.IsAny<Action<IBackgroundOperation>>())));
         }
 
-        [TestCase(0,  0,    UpdateFrequency.Update100)]
+        [TestCase(0,  0,    UpdateFrequency.None)]
         [TestCase(1,  1,    UpdateFrequency.Once)]
         [TestCase(1,  16,   UpdateFrequency.Once)]
         [TestCase(1,  17,   UpdateFrequency.Once)]
