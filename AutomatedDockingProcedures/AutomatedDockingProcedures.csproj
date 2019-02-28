@@ -115,6 +115,8 @@
     <AdditionalFiles Include="MDK\whitelist.cache" />
     <Compile Include="ProgramManager.cs" />
     <Compile Include="ProgramReloadHandler.cs" />
+    <Compile Include="ProgramSettings.cs" />
+    <Compile Include="ProgramSettingsProvider.cs" />
   </ItemGroup>
   <Import Project="..\Mixins\Mixins.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
