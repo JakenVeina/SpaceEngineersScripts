@@ -24,11 +24,11 @@ namespace IngameScript
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
-                var collectBatteryOperation = _collectBatteryBlockOperationPool.Get();
+                var collectBatteryBlockOperation = _collectBatteryBlockOperationPool.Get();
 
-                collectBatteryOperation.Block = block;
+                collectBatteryBlockOperation.Block = block;
 
-                return collectBatteryOperation;
+                return collectBatteryBlockOperation;
             }
 
             public void OnCompleted()

@@ -83,6 +83,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LandingGearCollectionHandlerTests.cs" />
+    <Compile Include="GasTankCollectionHandlerTests.cs" />
+    <Compile Include="FunctionalBlockCollectionHandlerTests.cs" />
+    <Compile Include="ConnectorCollectionHandlerTests.cs" />
     <Compile Include="BatteryBlockCollectionHandlerTests.cs" />
     <Compile Include="GasTankManagerTests.cs" />
     <Compile Include="FunctionalBlockManagerTests.cs" />
