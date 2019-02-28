@@ -24,7 +24,7 @@ namespace IngameScript
                 {
                     BlockTag = DefaultBlockTag,
                     ManageOtherGrids = false,
-                    AutoManageThisGrid = true,
+                    AutoManageThisGrid = false,
                     AutoManageOtherGrids = false
                 };
 

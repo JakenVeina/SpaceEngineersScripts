@@ -49,7 +49,7 @@ namespace Mixins.Test
 
             uut.Settings.BlockTag.ShouldBe(defualtBlockTag);
             uut.Settings.ManageOtherGrids.ShouldBe(false);
-            uut.Settings.AutoManageThisGrid.ShouldBe(true);
+            uut.Settings.AutoManageThisGrid.ShouldBe(false);
             uut.Settings.AutoManageOtherGrids.ShouldBe(false);
         }
 
