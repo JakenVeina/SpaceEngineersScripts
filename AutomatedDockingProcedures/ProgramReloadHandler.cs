@@ -15,19 +15,12 @@ namespace IngameScript
             }
 
             public void OnStarting()
-            {
-                _backgroundWorker.ScheduleOperation(_blockCollectionManager.MakeCollectBlocksOperation());
-
-                throw new Exception("Not yet implemented");
-            }
+                => _backgroundWorker.ScheduleOperation(_blockCollectionManager.MakeCollectBlocksOperation());
 
             public ParseResult OnParsing(ConfigLine configLine)
                 => ParseResult.Ignored;
 
-            public void OnCompleted()
-            {
-                throw new Exception("Not yet implemented");
-            }
+            public void OnCompleted() { }
 
             private readonly IBackgroundWorker _backgroundWorker;
 

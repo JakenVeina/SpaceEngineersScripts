@@ -93,6 +93,7 @@
     <Compile Include="BatteryBlockManagerTests.cs" />
     <Compile Include="LandingGearManagerTests.cs" />
     <Compile Include="ConnectorManagerTests.cs" />
+    <Compile Include="ProgramReloadHandlerTests.cs" />
     <Compile Include="ProgramSettingsProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
