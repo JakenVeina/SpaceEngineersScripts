@@ -102,11 +102,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldRunToCompletionIn(batteryBlockCount);
 
             mockBatteryBlocks.ForEach(mockBatteryBlock =>
-            {
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.SemiautoEnabled = false);
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.OnlyDischarge = false);
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.OnlyRecharge = true);
-            });
+                mockBatteryBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Recharge));
         }
 
         [TestCase(1)]
@@ -175,11 +171,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldRunToCompletionIn(batteryBlockCount);
 
             mockBatteryBlocks.ForEach(mockBatteryBlock =>
-            {
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.SemiautoEnabled = false);
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.OnlyDischarge = true);
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.OnlyRecharge = false);
-            });
+                mockBatteryBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Discharge));
         }
 
         [TestCase(1)]

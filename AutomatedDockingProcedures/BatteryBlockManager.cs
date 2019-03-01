@@ -100,11 +100,7 @@ namespace IngameScript
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyBatteryBlock batteryBlock)
-                {
-                    batteryBlock.SemiautoEnabled = false;
-                    batteryBlock.OnlyDischarge = false;
-                    batteryBlock.OnlyRecharge = true;
-                }
+                    => batteryBlock.ChargeMode = ChargeMode.Recharge;
             }
 
             private sealed class DischargeOperation : BatteryOperationBase
@@ -113,11 +109,7 @@ namespace IngameScript
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyBatteryBlock batteryBlock)
-                {
-                    batteryBlock.SemiautoEnabled = false;
-                    batteryBlock.OnlyDischarge = true;
-                    batteryBlock.OnlyRecharge = false;
-                }
+                    => batteryBlock.ChargeMode = ChargeMode.Discharge;
             }
         }
     }
