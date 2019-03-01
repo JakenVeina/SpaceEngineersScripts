@@ -6,7 +6,7 @@ using static IngameScript.Program;
 namespace AutomatedDockingProcedures.Test
 {
     [TestFixture]
-    public class DockingManagerSettingsProviderTests
+    public class ProgramSettingsProviderTests
     {
         #region Settings Tests
 
@@ -32,9 +32,9 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreRadioAntennae,
             bool ignoreReactors)
         {
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
-            var settings = new DockingManagerSettings()
+            var settings = new ProgramSettings()
             {
                 IgnoreBatteryBlocks  = ignoreBatteryBlocks,
                 IgnoreBeacons        = ignoreBeacons,
@@ -59,7 +59,7 @@ namespace AutomatedDockingProcedures.Test
         [Test]
         public void OnStarting_Always_ResetsSettings()
         {
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             uut.OnStarting();
 
@@ -84,7 +84,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
 
@@ -109,7 +109,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
 
@@ -126,7 +126,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreBatteryBlocks = true;
@@ -143,7 +143,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreBeacons = true;
@@ -160,7 +160,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreGasGenerators = true;
@@ -177,7 +177,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreGasTanks = true;
@@ -194,7 +194,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreGyros = true;
@@ -211,7 +211,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreLandingGears = true;
@@ -228,7 +228,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreLightingBlocks = true;
@@ -245,7 +245,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreRadioAntennae = true;
@@ -262,7 +262,7 @@ namespace AutomatedDockingProcedures.Test
         {
             var configLine = new ConfigLine(linePieces);
 
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
             var settings = uut.Settings;
             settings.IgnoreReactors = true;
@@ -300,9 +300,9 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreRadioAntennae,
             bool ignoreReactors)
         {
-            var uut = new DockingManagerSettingsProvider();
+            var uut = new ProgramSettingsProvider();
 
-            var settings = new DockingManagerSettings()
+            var settings = new ProgramSettings()
             {
                 IgnoreBatteryBlocks  = ignoreBatteryBlocks,
                 IgnoreBeacons        = ignoreBeacons,
@@ -323,9 +323,9 @@ namespace AutomatedDockingProcedures.Test
         #endregion OnCompleted() Tests
     }
 
-    public static class DockingManagerSettingsAssertions
+    public static class ProgramSettingsAssertions
     {
-        public static void ShouldBe(this DockingManagerSettings settings, DockingManagerSettings expected)
+        public static void ShouldBe(this ProgramSettings settings, ProgramSettings expected)
         {
             settings.IgnoreBatteryBlocks .ShouldBe(settings.IgnoreBatteryBlocks);
             settings.IgnoreBeacons       .ShouldBe(settings.IgnoreBeacons);

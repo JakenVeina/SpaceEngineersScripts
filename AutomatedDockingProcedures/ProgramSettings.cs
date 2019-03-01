@@ -2,7 +2,7 @@
 {
     partial class Program
     {
-        public struct DockingManagerSettings
+        public struct ProgramSettings
         {
             public bool IgnoreBatteryBlocks { get; set; }
 

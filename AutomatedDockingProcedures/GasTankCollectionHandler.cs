@@ -11,11 +11,11 @@ namespace IngameScript
             public GasTankCollectionHandler(
                 IGasTankManager gasTankManager,
                 ILogger logger,
-                IDockingManagerSettingsProvider dockingManagerSettingsProvider)
+                IProgramSettingsProvider programSettingsProvider)
             {
                 _gasTankManager = gasTankManager;
                 _logger = logger;
-                _dockingManagerSettingsProvider = dockingManagerSettingsProvider;
+                _programSettingsProvider = programSettingsProvider;
 
                 _collectGasTankOperationPool = new ObjectPool<CollectGasTankOperation>(onFinished
                     => new CollectGasTankOperation(this, onFinished));
@@ -40,7 +40,7 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
-            private readonly IDockingManagerSettingsProvider _dockingManagerSettingsProvider;
+            private readonly IProgramSettingsProvider _programSettingsProvider;
 
             private readonly ObjectPool<CollectGasTankOperation> _collectGasTankOperationPool;
 
@@ -63,7 +63,7 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreGasTanks)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreGasTanks)
                     {
                         var gasTank = Block as IMyGasTank;
                         if (gasTank != null)
