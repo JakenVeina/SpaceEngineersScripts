@@ -11,11 +11,11 @@ namespace IngameScript
             public FunctionalBlockCollectionHandler(
                 IFunctionalBlockManager functionalBlockManager,
                 ILogger logger,
-                IProgramSettingsProvider programSettingsProvider)
+                IDockingManagerSettingsProvider dockingManagerSettingsProvider)
             {
                 _functionalBlockManager = functionalBlockManager;
                 _logger = logger;
-                _programSettingsProvider = programSettingsProvider;
+                _dockingManagerSettingsProvider = dockingManagerSettingsProvider;
 
                 _collectFunctionalBlockOperationPool = new ObjectPool<CollectFunctionalBlockOperation>(onFinished
                     => new CollectFunctionalBlockOperation(this, onFinished));
@@ -40,7 +40,7 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
-            private readonly IProgramSettingsProvider _programSettingsProvider;
+            private readonly IDockingManagerSettingsProvider _dockingManagerSettingsProvider;
 
             private readonly ObjectPool<CollectFunctionalBlockOperation> _collectFunctionalBlockOperationPool;
 
@@ -63,7 +63,7 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreGyros)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreGyros)
                     {
                         var gyro = Block as IMyGyro;
                         if (gyro != null)
@@ -74,7 +74,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreLightingBlocks)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreLightingBlocks)
                     {
                         var lightingBlock = Block as IMyLightingBlock;
                         if (lightingBlock != null)
@@ -85,7 +85,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreBeacons)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreBeacons)
                     {
                         var beacon = Block as IMyBeacon;
                         if (beacon != null)
@@ -96,7 +96,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreRadioAntennae)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreRadioAntennae)
                     {
                         var antenna = Block as IMyRadioAntenna;
                         if (antenna != null)
@@ -107,7 +107,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreGasGenerators)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreGasGenerators)
                     {
                         var gasGenerator = Block as IMyGasGenerator;
                         if (gasGenerator != null)
@@ -118,7 +118,7 @@ namespace IngameScript
                         }
                     }
 
-                    if (!_owner._programSettingsProvider.Settings.IgnoreReactors)
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreReactors)
                     {
                         var reactor = Block as IMyReactor;
                         if (reactor != null)

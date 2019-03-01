@@ -52,10 +52,10 @@ namespace AutomatedDockingProcedures.Test
 
                 MockLogger = new Mock<ILogger>();
 
-                MockProgramSettingsProvider = new Mock<IProgramSettingsProvider>();
-                MockProgramSettingsProvider
+                MockDockingManagerSettingsProvider = new Mock<IDockingManagerSettingsProvider>();
+                MockDockingManagerSettingsProvider
                     .Setup(x => x.Settings)
-                    .Returns(() => new ProgramSettings()
+                    .Returns(() => new DockingManagerSettings()
                     {
                         IgnoreBatteryBlocks = IgnoreOtherBlocks,
                         IgnoreBeacons = IgnoreBeacons,
@@ -71,7 +71,7 @@ namespace AutomatedDockingProcedures.Test
                 Uut = new FunctionalBlockCollectionHandler(
                     MockFunctionalBlockManager.Object,
                     MockLogger.Object,
-                    MockProgramSettingsProvider.Object);
+                    MockDockingManagerSettingsProvider.Object);
 
                 MockBackgroundWorker = new FakeBackgroundWorker();
             }
@@ -80,7 +80,7 @@ namespace AutomatedDockingProcedures.Test
 
             public readonly Mock<ILogger> MockLogger;
 
-            public readonly Mock<IProgramSettingsProvider> MockProgramSettingsProvider;
+            public readonly Mock<IDockingManagerSettingsProvider> MockDockingManagerSettingsProvider;
 
             public readonly FunctionalBlockCollectionHandler Uut;
 
