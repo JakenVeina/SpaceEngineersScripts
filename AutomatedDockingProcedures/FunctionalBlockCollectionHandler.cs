@@ -10,10 +10,12 @@ namespace IngameScript
         {
             public FunctionalBlockCollectionHandler(
                 IFunctionalBlockManager functionalBlockManager,
-                ILogger logger)
+                ILogger logger,
+                IProgramSettingsProvider programSettingsProvider)
             {
                 _functionalBlockManager = functionalBlockManager;
                 _logger = logger;
+                _programSettingsProvider = programSettingsProvider;
 
                 _collectFunctionalBlockOperationPool = new ObjectPool<CollectFunctionalBlockOperation>(onFinished
                     => new CollectFunctionalBlockOperation(this, onFinished));
@@ -38,6 +40,8 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
+            private readonly IProgramSettingsProvider _programSettingsProvider;
+
             private readonly ObjectPool<CollectFunctionalBlockOperation> _collectFunctionalBlockOperationPool;
 
             private class CollectFunctionalBlockOperation : IBackgroundOperation<BlockCollectionResult>, IDisposable
@@ -59,51 +63,70 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    var gyro = Block as IMyGyro;
-                    if (gyro != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreGyros)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(gyro);
-                        _result = BlockCollectionResult.Success;
-                        return BackgroundOperationResult.Completed;
+                        var gyro = Block as IMyGyro;
+                        if (gyro != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(gyro);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
-                    var lightingBlock = Block as IMyLightingBlock;
-                    if (lightingBlock != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreLightingBlocks)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(lightingBlock);
-                        _result = BlockCollectionResult.Success;
-                        return BackgroundOperationResult.Completed;
+                        var lightingBlock = Block as IMyLightingBlock;
+                        if (lightingBlock != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(lightingBlock);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
-                    var beacon = Block as IMyBeacon;
-                    if (beacon != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreBeacons)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(beacon);
-                        _result = BlockCollectionResult.Success;
-                        return BackgroundOperationResult.Completed;
+                        var beacon = Block as IMyBeacon;
+                        if (beacon != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(beacon);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
-                    var antenna = Block as IMyRadioAntenna;
-                    if (antenna != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreRadioAntennae)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(antenna);
-                        _result = BlockCollectionResult.Success;
-                        return BackgroundOperationResult.Completed;
+                        var antenna = Block as IMyRadioAntenna;
+                        if (antenna != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(antenna);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
-                    var gasGenerator = Block as IMyGasGenerator;
-                    if (gasGenerator != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreGasGenerators)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(gasGenerator);
-                        _result = BlockCollectionResult.Success;
+                        var gasGenerator = Block as IMyGasGenerator;
+                        if (gasGenerator != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(gasGenerator);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
-                    var reactor = Block as IMyReactor;
-                    if (reactor != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreReactors)
                     {
-                        _owner._functionalBlockManager.AddFunctionalBlock(reactor);
-                        _result = BlockCollectionResult.Success;
-                        return BackgroundOperationResult.Completed;
+                        var reactor = Block as IMyReactor;
+                        if (reactor != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(reactor);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
                     }
 
                     return BackgroundOperationResult.Completed;

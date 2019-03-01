@@ -10,10 +10,12 @@ namespace IngameScript
         {
             public GasTankCollectionHandler(
                 IGasTankManager gasTankManager,
-                ILogger logger)
+                ILogger logger,
+                IProgramSettingsProvider programSettingsProvider)
             {
                 _gasTankManager = gasTankManager;
                 _logger = logger;
+                _programSettingsProvider = programSettingsProvider;
 
                 _collectGasTankOperationPool = new ObjectPool<CollectGasTankOperation>(onFinished
                     => new CollectGasTankOperation(this, onFinished));
@@ -38,6 +40,8 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
+            private readonly IProgramSettingsProvider _programSettingsProvider;
+
             private readonly ObjectPool<CollectGasTankOperation> _collectGasTankOperationPool;
 
             private class CollectGasTankOperation : IBackgroundOperation<BlockCollectionResult>, IDisposable
@@ -59,11 +63,14 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    var gasTank = Block as IMyGasTank;
-                    if (gasTank != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreGasTanks)
                     {
-                        _owner._gasTankManager.AddGasTank(gasTank);
-                        _result = BlockCollectionResult.Success;
+                        var gasTank = Block as IMyGasTank;
+                        if (gasTank != null)
+                        {
+                            _owner._gasTankManager.AddGasTank(gasTank);
+                            _result = BlockCollectionResult.Success;
+                        }
                     }
 
                     return BackgroundOperationResult.Completed;

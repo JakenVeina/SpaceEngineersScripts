@@ -22,6 +22,27 @@ namespace AutomatedDockingProcedures.Test
         {
             public int FunctionalBlockCount;
 
+            public bool IgnoreBeacons
+                = false;
+
+            public bool IgnoreGasGenerators
+                = false;
+
+            public bool IgnoreGyros
+                = false;
+
+            public bool IgnoreLightingBlocks
+                = false;
+
+            public bool IgnoreRadioAntennae
+                = false;
+
+            public bool IgnoreReactors
+                = false;
+
+            public bool IgnoreOtherBlocks
+                = false;
+
             public TestContext()
             {
                 MockFunctionalBlockManager = new Mock<IFunctionalBlockManager>();
@@ -31,9 +52,26 @@ namespace AutomatedDockingProcedures.Test
 
                 MockLogger = new Mock<ILogger>();
 
+                MockProgramSettingsProvider = new Mock<IProgramSettingsProvider>();
+                MockProgramSettingsProvider
+                    .Setup(x => x.Settings)
+                    .Returns(() => new ProgramSettings()
+                    {
+                        IgnoreBatteryBlocks = IgnoreOtherBlocks,
+                        IgnoreBeacons = IgnoreBeacons,
+                        IgnoreGasGenerators = IgnoreGasGenerators,
+                        IgnoreGasTanks = IgnoreOtherBlocks,
+                        IgnoreGyros = IgnoreGyros,
+                        IgnoreLandingGears = IgnoreOtherBlocks,
+                        IgnoreLightingBlocks = IgnoreLightingBlocks,
+                        IgnoreRadioAntennae = IgnoreRadioAntennae,
+                        IgnoreReactors = IgnoreReactors
+                    });
+
                 Uut = new FunctionalBlockCollectionHandler(
                     MockFunctionalBlockManager.Object,
-                    MockLogger.Object);
+                    MockLogger.Object,
+                    MockProgramSettingsProvider.Object);
 
                 MockBackgroundWorker = new FakeBackgroundWorker();
             }
@@ -41,6 +79,8 @@ namespace AutomatedDockingProcedures.Test
             public readonly Mock<IFunctionalBlockManager> MockFunctionalBlockManager;
 
             public readonly Mock<ILogger> MockLogger;
+
+            public readonly Mock<IProgramSettingsProvider> MockProgramSettingsProvider;
 
             public readonly FunctionalBlockCollectionHandler Uut;
 
@@ -51,20 +91,6 @@ namespace AutomatedDockingProcedures.Test
         }
 
         #endregion Test Context
-
-        #region Test Cases
-
-        public static readonly Type[] BlockTypeTestCases
-            = {
-                typeof(IMyGyro),
-                typeof(IMyLightingBlock),
-                typeof(IMyBeacon),
-                typeof(IMyRadioAntenna),
-                typeof(IMyGasGenerator),
-                typeof(IMyReactor),
-            };
-
-        #endregion Test Cases
 
         #region OnStarting() Tests
 
@@ -104,10 +130,38 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsIgnored.ShouldBeTrue();
         }
 
-        [TestCaseSource(nameof(BlockTypeTestCases))]
-        public void MakeCollectBlockOperation_BlockIsRelevantFunctionalBlock_AddsFunctionalBlock(Type blockType)
+        [TestCase(typeof(IMyBeacon),        false, true,  true,  true,  true,  true,  true )]
+        [TestCase(typeof(IMyBeacon),        false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyGasGenerator),  true,  false, true,  true,  true,  true,  true )]
+        [TestCase(typeof(IMyGasGenerator),  false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyGyro),          true,  true,  false, true,  true,  true,  true )]
+        [TestCase(typeof(IMyGyro),          false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyLightingBlock), true,  true,  true,  false, true,  true,  true )]
+        [TestCase(typeof(IMyLightingBlock), false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyRadioAntenna),  true,  true,  true,  true,  false, true,  true )]
+        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyReactor),       true,  true,  true,  true,  true,  false, true )]
+        [TestCase(typeof(IMyReactor),       false, false, false, false, false, false, false)]
+        public void MakeCollectBlockOperation_BlockIsRelevantFunctionalBlock_AddsFunctionalBlock(
+            Type blockType,
+            bool ignoreBeacons,
+            bool ignoreGasGenerators,
+            bool ignoreGyros,
+            bool ignoreLightingBlocks,
+            bool ignoreRadioAntennae,
+            bool ignoreReactors,
+            bool ignoreOtherBlocks)
         {
-            var testContext = new TestContext();
+            var testContext = new TestContext()
+            {
+                IgnoreBeacons = ignoreBeacons,
+                IgnoreGasGenerators = ignoreGasGenerators,
+                IgnoreGyros = ignoreGyros,
+                IgnoreLightingBlocks = ignoreLightingBlocks,
+                IgnoreRadioAntennae = ignoreRadioAntennae,
+                IgnoreReactors = ignoreReactors,
+                IgnoreOtherBlocks = ignoreOtherBlocks
+            };
 
             var mockBlock = testContext.MakeFakeBlock(blockType);
 
@@ -123,7 +177,51 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsSuccess.ShouldBeTrue();
         }
 
-        [TestCaseSource(nameof(BlockTypeTestCases))]
+        [TestCase(typeof(IMyBeacon),        true,  false, false, false, false, false)]
+        [TestCase(typeof(IMyGasGenerator),  false, true,  false, false, false, false)]
+        [TestCase(typeof(IMyGyro),          false, false, true,  false, false, false)]
+        [TestCase(typeof(IMyLightingBlock), false, false, false, true,  false, false)]
+        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, true,  false)]
+        [TestCase(typeof(IMyReactor),       false, false, false, false, false, true )]
+        public void MakeCollectBlockOperation_BlockTypeIsIgnored_IgnoresBlock(
+            Type blockType,
+            bool ignoreBeacons,
+            bool ignoreGasGenerators,
+            bool ignoreGyros,
+            bool ignoreLightingBlocks,
+            bool ignoreRadioAntennae,
+            bool ignoreReactors)
+        {
+            var testContext = new TestContext()
+            {
+                IgnoreBeacons = ignoreBeacons,
+                IgnoreGasGenerators = ignoreGasGenerators,
+                IgnoreGyros = ignoreGyros,
+                IgnoreLightingBlocks = ignoreLightingBlocks,
+                IgnoreRadioAntennae = ignoreRadioAntennae,
+                IgnoreReactors = ignoreReactors
+            };
+
+            var mockBlock = testContext.MakeFakeBlock(blockType);
+
+            var result = testContext.Uut.MakeCollectBlockOperation(mockBlock.Object as IMyFunctionalBlock);
+            result.ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 1);
+
+            testContext.MockBackgroundWorker.MockSubOperationScheduler
+                .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
+
+            testContext.MockFunctionalBlockManager
+                .ShouldNotHaveReceived(x => x.AddFunctionalBlock(It.IsAny<IMyFunctionalBlock>()));
+
+            result.Result.IsIgnored.ShouldBeTrue();
+        }
+
+        [TestCase(typeof(IMyGyro))]
+        [TestCase(typeof(IMyLightingBlock))]
+        [TestCase(typeof(IMyBeacon))]
+        [TestCase(typeof(IMyRadioAntenna))]
+        [TestCase(typeof(IMyGasGenerator))]
+        [TestCase(typeof(IMyReactor))]
         public void MakeCollectBlockOperation_OperationIsDisposed_RecyclesOperation(Type blockType)
         {
             var testContext = new TestContext();

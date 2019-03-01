@@ -23,6 +23,12 @@ namespace AutomatedDockingProcedures.Test
         {
             public int LandingGearCount;
 
+            public bool IgnoreLandingGears
+                = false;
+
+            public bool IgnoreOtherBlocks
+                = false;
+
             public TestContext()
             {
                 MockLandingGearManager = new Mock<ILandingGearManager>();
@@ -32,9 +38,26 @@ namespace AutomatedDockingProcedures.Test
 
                 MockLogger = new Mock<ILogger>();
 
+                MockProgramSettingsProvider = new Mock<IProgramSettingsProvider>();
+                MockProgramSettingsProvider
+                    .Setup(x => x.Settings)
+                    .Returns(() => new ProgramSettings()
+                    {
+                        IgnoreBatteryBlocks = IgnoreOtherBlocks,
+                        IgnoreBeacons = IgnoreOtherBlocks,
+                        IgnoreGasGenerators = IgnoreOtherBlocks,
+                        IgnoreGasTanks = IgnoreOtherBlocks,
+                        IgnoreGyros = IgnoreOtherBlocks,
+                        IgnoreLandingGears = IgnoreLandingGears,
+                        IgnoreLightingBlocks = IgnoreOtherBlocks,
+                        IgnoreRadioAntennae = IgnoreOtherBlocks,
+                        IgnoreReactors = IgnoreOtherBlocks
+                    });
+
                 Uut = new LandingGearCollectionHandler(
                     MockLandingGearManager.Object,
-                    MockLogger.Object);
+                    MockLogger.Object,
+                    MockProgramSettingsProvider.Object);
 
                 MockBackgroundWorker = new FakeBackgroundWorker();
             }
@@ -42,6 +65,8 @@ namespace AutomatedDockingProcedures.Test
             public readonly Mock<ILandingGearManager> MockLandingGearManager;
 
             public readonly Mock<ILogger> MockLogger;
+
+            public readonly Mock<IProgramSettingsProvider> MockProgramSettingsProvider;
 
             public readonly LandingGearCollectionHandler Uut;
 
@@ -86,10 +111,14 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsIgnored.ShouldBeTrue();
         }
 
-        [Test]
-        public void MakeCollectBlockOperation_BlockIsLandingGear_AddsLandingGear()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MakeCollectBlockOperation_BlockIsLandingGear_AddsLandingGear(bool ignoreOtherBlocks)
         {
-            var testContext = new TestContext();
+            var testContext = new TestContext()
+            {
+                IgnoreOtherBlocks = ignoreOtherBlocks
+            };
 
             var mockBlock = new Mock<IMyLandingGear>();
 
@@ -103,6 +132,28 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddLandingGear(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
+        }
+
+        [Test]
+        public void MakeCollectBlockOperation_LandingGearsAreIgnored_IgnoresBlock()
+        {
+            var testContext = new TestContext()
+            {
+                IgnoreLandingGears = true
+            };
+
+            var mockBlock = new Mock<IMyTerminalBlock>();
+
+            var result = testContext.Uut.MakeCollectBlockOperation(mockBlock.Object);
+            result.ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 1);
+
+            testContext.MockBackgroundWorker.MockSubOperationScheduler
+                .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
+
+            testContext.MockLandingGearManager
+                .ShouldNotHaveReceived(x => x.AddLandingGear(It.IsAny<IMyLandingGear>()));
+
+            result.Result.IsIgnored.ShouldBeTrue();
         }
 
         [Test]

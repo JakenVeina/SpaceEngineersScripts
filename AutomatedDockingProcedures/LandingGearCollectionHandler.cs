@@ -11,10 +11,12 @@ namespace IngameScript
         {
             public LandingGearCollectionHandler(
                 ILandingGearManager landingGearManager,
-                ILogger logger)
+                ILogger logger,
+                IProgramSettingsProvider programSettingsProvider)
             {
                 _landingGearManager = landingGearManager;
                 _logger = logger;
+                _programSettingsProvider = programSettingsProvider;
 
                 _collectLandingGearOperationPool = new ObjectPool<CollectLandingGearOperation>(onFinished
                     => new CollectLandingGearOperation(this, onFinished));
@@ -39,6 +41,8 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
+            private readonly IProgramSettingsProvider _programSettingsProvider;
+
             private readonly ObjectPool<CollectLandingGearOperation> _collectLandingGearOperationPool;
 
             private class CollectLandingGearOperation : IBackgroundOperation<BlockCollectionResult>, IDisposable
@@ -60,11 +64,14 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    var landingGear = Block as IMyLandingGear;
-                    if (landingGear != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreLandingGears)
                     {
-                        _owner._landingGearManager.AddLandingGear(landingGear);
-                        _result = BlockCollectionResult.Success;
+                        var landingGear = Block as IMyLandingGear;
+                        if (landingGear != null)
+                        {
+                            _owner._landingGearManager.AddLandingGear(landingGear);
+                            _result = BlockCollectionResult.Success;
+                        }
                     }
 
                     return BackgroundOperationResult.Completed;

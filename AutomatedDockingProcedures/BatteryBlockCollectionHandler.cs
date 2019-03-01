@@ -10,10 +10,12 @@ namespace IngameScript
         {
             public BatteryBlockCollectionHandler(
                 IBatteryBlockManager batteryBlockManager,
-                ILogger logger)
+                ILogger logger,
+                IProgramSettingsProvider programSettingsProvider)
             {
                 _batteryBlockManager = batteryBlockManager;
                 _logger = logger;
+                _programSettingsProvider = programSettingsProvider;
 
                 _collectBatteryBlockOperationPool = new ObjectPool<CollectBatteryBlockOperation>(onFinished
                     => new CollectBatteryBlockOperation(this, onFinished));
@@ -38,6 +40,8 @@ namespace IngameScript
 
             private readonly ILogger _logger;
 
+            private readonly IProgramSettingsProvider _programSettingsProvider;
+
             private readonly ObjectPool<CollectBatteryBlockOperation> _collectBatteryBlockOperationPool;
 
             private class CollectBatteryBlockOperation : IBackgroundOperation<BlockCollectionResult>, IDisposable
@@ -59,11 +63,14 @@ namespace IngameScript
                 {
                     _result = BlockCollectionResult.Ignored;
 
-                    var batteryBlock = Block as IMyBatteryBlock;
-                    if (batteryBlock != null)
+                    if (!_owner._programSettingsProvider.Settings.IgnoreBatteryBlocks)
                     {
-                        _owner._batteryBlockManager.AddBatteryBlock(batteryBlock);
-                        _result = BlockCollectionResult.Success;
+                        var batteryBlock = Block as IMyBatteryBlock;
+                        if (batteryBlock != null)
+                        {
+                            _owner._batteryBlockManager.AddBatteryBlock(batteryBlock);
+                            _result = BlockCollectionResult.Success;
+                        }
                     }
 
                     return BackgroundOperationResult.Completed;

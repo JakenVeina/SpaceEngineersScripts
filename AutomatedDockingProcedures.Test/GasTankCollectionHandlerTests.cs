@@ -22,6 +22,12 @@ namespace AutomatedDockingProcedures.Test
         {
             public int GasTankCount;
 
+            public bool IgnoreGasTanks
+                = false;
+
+            public bool IgnoreOtherBlocks
+                = false;
+
             public TestContext()
             {
                 MockGasTankManager = new Mock<IGasTankManager>();
@@ -31,9 +37,26 @@ namespace AutomatedDockingProcedures.Test
 
                 MockLogger = new Mock<ILogger>();
 
+                MockProgramSettingsProvider = new Mock<IProgramSettingsProvider>();
+                MockProgramSettingsProvider
+                    .Setup(x => x.Settings)
+                    .Returns(() => new ProgramSettings()
+                    {
+                        IgnoreBatteryBlocks = IgnoreOtherBlocks,
+                        IgnoreBeacons = IgnoreOtherBlocks,
+                        IgnoreGasGenerators = IgnoreOtherBlocks,
+                        IgnoreGasTanks = IgnoreGasTanks,
+                        IgnoreGyros = IgnoreOtherBlocks,
+                        IgnoreLandingGears = IgnoreOtherBlocks,
+                        IgnoreLightingBlocks = IgnoreOtherBlocks,
+                        IgnoreRadioAntennae = IgnoreOtherBlocks,
+                        IgnoreReactors = IgnoreOtherBlocks
+                    });
+
                 Uut = new GasTankCollectionHandler(
                     MockGasTankManager.Object,
-                    MockLogger.Object);
+                    MockLogger.Object,
+                    MockProgramSettingsProvider.Object);
 
                 MockBackgroundWorker = new FakeBackgroundWorker();
             }
@@ -41,6 +64,8 @@ namespace AutomatedDockingProcedures.Test
             public readonly Mock<IGasTankManager> MockGasTankManager;
 
             public readonly Mock<ILogger> MockLogger;
+
+            public readonly Mock<IProgramSettingsProvider> MockProgramSettingsProvider;
 
             public readonly GasTankCollectionHandler Uut;
 
@@ -85,10 +110,14 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsIgnored.ShouldBeTrue();
         }
 
-        [Test]
-        public void MakeCollectBlockOperation_BlockIsGasTank_AddsGasTank()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MakeCollectBlockOperation_BlockIsGasTank_AddsGasTank(bool ignoreOtherBlocks)
         {
-            var testContext = new TestContext();
+            var testContext = new TestContext()
+            {
+                IgnoreOtherBlocks = ignoreOtherBlocks
+            };
 
             var mockBlock = new Mock<IMyGasTank>();
 
@@ -102,6 +131,28 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddGasTank(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
+        }
+
+        [Test]
+        public void MakeCollectBlockOperation_GasTanksAreIgnored_IgnoresBlock()
+        {
+            var testContext = new TestContext()
+            {
+                IgnoreGasTanks = true
+            };
+
+            var mockBlock = new Mock<IMyTerminalBlock>();
+
+            var result = testContext.Uut.MakeCollectBlockOperation(mockBlock.Object);
+            result.ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 1);
+
+            testContext.MockBackgroundWorker.MockSubOperationScheduler
+                .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
+
+            testContext.MockGasTankManager
+                .ShouldNotHaveReceived(x => x.AddGasTank(It.IsAny<IMyGasTank>()));
+
+            result.Result.IsIgnored.ShouldBeTrue();
         }
 
         [Test]
