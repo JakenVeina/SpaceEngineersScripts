@@ -35,37 +35,22 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E722FA10-DC0E-4057-8A17-C170A1016697}.Debug|x64.ActiveCfg = Debug|x64
 		{E722FA10-DC0E-4057-8A17-C170A1016697}.Debug|x64.Build.0 = Debug|x64
-		{E722FA10-DC0E-4057-8A17-C170A1016697}.Release|x64.ActiveCfg = Debug|x64
-		{E722FA10-DC0E-4057-8A17-C170A1016697}.Release|x64.Build.0 = Debug|x64
 		{510A6E26-959F-4222-AC5B-55F8058789EB}.Debug|x64.ActiveCfg = Debug|x64
 		{510A6E26-959F-4222-AC5B-55F8058789EB}.Debug|x64.Build.0 = Debug|x64
-		{510A6E26-959F-4222-AC5B-55F8058789EB}.Release|x64.ActiveCfg = Release|x64
-		{510A6E26-959F-4222-AC5B-55F8058789EB}.Release|x64.Build.0 = Release|x64
 		{56AD4FD6-8B4F-443F-8A4B-A5B4937108A4}.Debug|x64.ActiveCfg = Debug|x64
 		{56AD4FD6-8B4F-443F-8A4B-A5B4937108A4}.Debug|x64.Build.0 = Debug|x64
-		{56AD4FD6-8B4F-443F-8A4B-A5B4937108A4}.Release|x64.ActiveCfg = Release|x64
-		{56AD4FD6-8B4F-443F-8A4B-A5B4937108A4}.Release|x64.Build.0 = Release|x64
 		{9ACD70C3-74F2-4AB3-84ED-D9AFCF46F990}.Debug|x64.ActiveCfg = Debug|x64
 		{9ACD70C3-74F2-4AB3-84ED-D9AFCF46F990}.Debug|x64.Build.0 = Debug|x64
-		{9ACD70C3-74F2-4AB3-84ED-D9AFCF46F990}.Release|x64.ActiveCfg = Debug|x64
-		{9ACD70C3-74F2-4AB3-84ED-D9AFCF46F990}.Release|x64.Build.0 = Debug|x64
 		{B45B4337-8866-408D-A112-C14A9651D148}.Debug|x64.ActiveCfg = Debug|x64
 		{B45B4337-8866-408D-A112-C14A9651D148}.Debug|x64.Build.0 = Debug|x64
-		{B45B4337-8866-408D-A112-C14A9651D148}.Release|x64.ActiveCfg = Release|x64
-		{B45B4337-8866-408D-A112-C14A9651D148}.Release|x64.Build.0 = Release|x64
 		{5EF9F9DD-E26D-4A6B-9307-0AECFF6B0E8D}.Debug|x64.ActiveCfg = Debug|x64
 		{5EF9F9DD-E26D-4A6B-9307-0AECFF6B0E8D}.Debug|x64.Build.0 = Debug|x64
-		{5EF9F9DD-E26D-4A6B-9307-0AECFF6B0E8D}.Release|x64.ActiveCfg = Debug|x64
-		{5EF9F9DD-E26D-4A6B-9307-0AECFF6B0E8D}.Release|x64.Build.0 = Debug|x64
 		{8117CC9C-3C2B-4582-A3B9-529D49502E06}.Debug|x64.ActiveCfg = Debug|x64
 		{8117CC9C-3C2B-4582-A3B9-529D49502E06}.Debug|x64.Build.0 = Debug|x64
-		{8117CC9C-3C2B-4582-A3B9-529D49502E06}.Release|x64.ActiveCfg = Release|x64
-		{8117CC9C-3C2B-4582-A3B9-529D49502E06}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
