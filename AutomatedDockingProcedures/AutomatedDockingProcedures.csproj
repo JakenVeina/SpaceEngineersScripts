@@ -96,6 +96,7 @@
     <Analyzer Include="c:\users\jake\appdata\local\microsoft\visualstudio\15.0_8fb62721\extensions\1jurg4tf.r1j\Analyzers\MDKAnalyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DockingManager.cs" />
     <Compile Include="LandingGearCollectionHandler.cs" />
     <Compile Include="GasTankCollectionHandler.cs" />
     <Compile Include="FunctionalBlockCollectionHandler.cs" />

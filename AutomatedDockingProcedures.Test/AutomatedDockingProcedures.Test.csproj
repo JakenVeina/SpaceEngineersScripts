@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DockingManagerTests.cs" />
     <Compile Include="LandingGearCollectionHandlerTests.cs" />
     <Compile Include="GasTankCollectionHandlerTests.cs" />
     <Compile Include="FunctionalBlockCollectionHandlerTests.cs" />
