@@ -43,7 +43,7 @@ namespace Mixins.Test.Common
 
         public void ShouldCompleteOperation(IBackgroundOperation backgroundOperation)
         {
-            Object.ScheduleOperation(backgroundOperation);
+            _scheduledOperations.AddToBack(backgroundOperation);
 
             ExecuteCount = 0;
             while (ExecuteCount < MaxExecuteCount)
