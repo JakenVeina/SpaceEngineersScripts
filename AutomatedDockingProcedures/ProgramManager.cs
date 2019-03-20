@@ -31,8 +31,6 @@ namespace IngameScript
                 else
                     _logger.AddLine($"Invalid argument: \"{argument}\"");
 
-                //_logger.AddLine($"Executed {_gridProgramRuntimeInfo.CurrentInstructionCount} instructions");
-
                 _echoProvider.Echo(_logger.Render());
             }
 
@@ -53,6 +51,9 @@ namespace IngameScript
                 throw new Exception("Not yet implemented");
             }
 
+            private static void DoRun(ProgramManager @this)
+                => @this._backgroundWorker.ExecuteOperations();
+
             private readonly IBackgroundWorker _backgroundWorker;
 
             private readonly IConfigManager _configManager;
@@ -68,7 +69,9 @@ namespace IngameScript
                 {
                     { "reload", DoReload },
                     { "dock",   DoDock   },
-                    { "undock", DoUndock }
+                    { "undock", DoUndock },
+                    { "run",    DoRun    },
+                    { "",       DoRun    }
                 };
         }
     }
