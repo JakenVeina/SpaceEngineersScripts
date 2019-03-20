@@ -95,7 +95,7 @@
     <Compile Include="ConnectorManagerTests.cs" />
     <Compile Include="ProgramManagerTests.cs" />
     <Compile Include="ProgramReloadHandlerTests.cs" />
-    <Compile Include="ProgramSettingsProviderTests.cs" />
+    <Compile Include="DockingManagerSettingsProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

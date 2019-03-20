@@ -5,14 +5,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        public interface IProgramSettingsProvider
+        public interface IDockingManagerSettingsProvider
         {
-            ProgramSettings Settings { get; set;  }
+            DockingManagerSettings Settings { get; set;  }
         }
 
-        public class ProgramSettingsProvider : IProgramSettingsProvider, IConfigParseHandler
+        public class DockingManagerSettingsProvider : IDockingManagerSettingsProvider, IConfigParseHandler
         {
-            public ProgramSettings Settings
+            public DockingManagerSettings Settings
             {
                 get { return _settings; }
                 set { _settings = value; }
@@ -20,7 +20,7 @@ namespace IngameScript
 
             public void OnStarting()
             {
-                _settings = new ProgramSettings()
+                _settings = new DockingManagerSettings()
                 {
                     IgnoreBatteryBlocks  = false,
                     IgnoreBeacons        = false,
@@ -36,7 +36,7 @@ namespace IngameScript
 
             public ParseResult OnParsing(ConfigLine configLine)
             {
-                Func<ProgramSettingsProvider, ConfigLine, ParseResult> parser;
+                Func<DockingManagerSettingsProvider, ConfigLine, ParseResult> parser;
                 if (_parsersByOption.TryGetValue(configLine.Option, out parser))
                     return parser.Invoke(this, configLine);
 
@@ -45,7 +45,7 @@ namespace IngameScript
 
             public void OnCompleted() { }
 
-            private static ParseResult ParseIgnoreBatteryBlocks(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreBatteryBlocks(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-battery-blocks\"");
@@ -53,7 +53,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreBeacons(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreBeacons(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-beacons\"");
@@ -61,7 +61,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreGasGenerators(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreGasGenerators(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-gas-generators\"");
@@ -69,7 +69,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreGasTanks(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreGasTanks(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-gas-tanks\"");
@@ -77,7 +77,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreGyros(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreGyros(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-gyros\"");
@@ -85,7 +85,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreLandingGears(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreLandingGears(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-landing-gears\"");
@@ -93,7 +93,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreLightingBlocks(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreLightingBlocks(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-lighting-blocks\"");
@@ -101,7 +101,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreRadioAntennae(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreRadioAntennae(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-radio-antennae\"");
@@ -109,7 +109,7 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private static ParseResult ParseIgnoreReactors(ProgramSettingsProvider @this, ConfigLine configLine)
+            private static ParseResult ParseIgnoreReactors(DockingManagerSettingsProvider @this, ConfigLine configLine)
             {
                 if (configLine.ParamCount != 0)
                     return ParseResult.FromError("Usage: \"ignore-reactors\"");
@@ -117,10 +117,10 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
-            private ProgramSettings _settings;
+            private DockingManagerSettings _settings;
 
-            private static readonly Dictionary<string, Func<ProgramSettingsProvider, ConfigLine, ParseResult>> _parsersByOption
-                = new Dictionary<string, Func<ProgramSettingsProvider, ConfigLine, ParseResult>>()
+            private static readonly Dictionary<string, Func<DockingManagerSettingsProvider, ConfigLine, ParseResult>> _parsersByOption
+                = new Dictionary<string, Func<DockingManagerSettingsProvider, ConfigLine, ParseResult>>()
                 {
                     ["ignore-battery-blocks"]  = ParseIgnoreBatteryBlocks,
                     ["ignore-beacons"]         = ParseIgnoreBeacons,

@@ -28,27 +28,27 @@ namespace IngameScript
                     logger,
                     managedBlockConfigParseHandlers,
                     managerSettingsProvider);
-            var programSettingsProvider = new ProgramSettingsProvider();
+            var dockingManagerSettingsProvider = new DockingManagerSettingsProvider();
 
             var batteryBlockCollectionHandler = new BatteryBlockCollectionHandler(
                     batteryBlockManager,
                     logger,
-                    programSettingsProvider);
+                    dockingManagerSettingsProvider);
             var connectorCollectionHandler = new ConnectorCollectionHandler(
                     connectorManager,
                     logger);
             var functionalBlockCollectionHandler = new FunctionalBlockCollectionHandler(
                     functionalBlockManager,
                     logger,
-                    programSettingsProvider);
+                    dockingManagerSettingsProvider);
             var gasTankCollectionHandler = new GasTankCollectionHandler(
                     gasTankManager,
                     logger,
-                    programSettingsProvider);
+                    dockingManagerSettingsProvider);
             var landingGearCollectionHandler = new LandingGearCollectionHandler(
                     landingGearManager,
                     logger,
-                    programSettingsProvider);
+                    dockingManagerSettingsProvider);
             var managedBlockCollectionHandler = new ManagedBlockCollectionHandler(
                     managedBlockConfigManager,
                     managedBlockSettingsProvider,
@@ -83,7 +83,7 @@ namespace IngameScript
                 backgroundWorkerSettingsProvider,
                 loggerSettingsProvider,
                 managerSettingsProvider,
-                programSettingsProvider,
+                dockingManagerSettingsProvider,
                 programReloadHandler
             };
 
