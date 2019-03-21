@@ -12,12 +12,14 @@ namespace IngameScript
             public ProgramManager(
                 IBackgroundWorker backgroundWorker,
                 IConfigManager configManager,
+                IDockingManager dockingManager,
                 IEchoProvider echoProvider,
                 IMyGridProgramRuntimeInfo gridProgramRuntimeInfo,
                 ILogger logger)
             {
                 _backgroundWorker = backgroundWorker;
                 _configManager = configManager;
+                _dockingManager = dockingManager;
                 _echoProvider = echoProvider;
                 _gridProgramRuntimeInfo = gridProgramRuntimeInfo;
                 _logger = logger;
@@ -43,12 +45,16 @@ namespace IngameScript
 
             private static void DoDock(ProgramManager @this)
             {
-                throw new Exception("Not yet implemented");
+                @this._backgroundWorker.ScheduleOperation(@this._dockingManager.MakeDockOperation());
+
+                @this._gridProgramRuntimeInfo.UpdateFrequency |= UpdateFrequency.Once;
             }
 
             private static void DoUndock(ProgramManager @this)
             {
-                throw new Exception("Not yet implemented");
+                @this._backgroundWorker.ScheduleOperation(@this._dockingManager.MakeUndockOperation());
+
+                @this._gridProgramRuntimeInfo.UpdateFrequency |= UpdateFrequency.Once;
             }
 
             private static void DoRun(ProgramManager @this)
@@ -57,6 +63,8 @@ namespace IngameScript
             private readonly IBackgroundWorker _backgroundWorker;
 
             private readonly IConfigManager _configManager;
+
+            private readonly IDockingManager _dockingManager;
 
             private readonly IEchoProvider _echoProvider;
 

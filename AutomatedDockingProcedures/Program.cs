@@ -91,11 +91,19 @@ namespace IngameScript
                      configParseHandlers,
                      logger,
                      Me);
+            var dockingManager = new DockingManager(
+                     logger,
+                     batteryBlockManager,
+                     connectorManager,
+                     functionalBlockManager,
+                     gasTankManager,
+                     landingGearManager);
             var echoProvider = new EchoProvider(Echo);
 
             _programManager = new ProgramManager(
                 backgroundWorker,
                 configManager,
+                dockingManager,
                 echoProvider,
                 Runtime,
                 logger);

@@ -26,6 +26,14 @@ namespace AutomatedDockingProcedures.Test
                     .Setup(x => x.MakeParseOperation())
                     .Returns(() => MockParseOperation.Object);
 
+                MockDockingManager = new Mock<IDockingManager>();
+                MockDockingManager
+                    .Setup(x => x.MakeDockOperation())
+                    .Returns(() => MockDockOperation.Object);
+                MockDockingManager
+                    .Setup(x => x.MakeUndockOperation())
+                    .Returns(() => MockUndockOperation.Object);                    
+
                 MockEchoProvider = new Mock<IEchoProvider>();
 
                 MockGridProgramRuntimeInfo = new Mock<IMyGridProgramRuntimeInfo>();
@@ -38,16 +46,23 @@ namespace AutomatedDockingProcedures.Test
                 Uut = new ProgramManager(
                     MockBackgroundWorker.Object,
                     MockConfigManager.Object,
+                    MockDockingManager.Object,
                     MockEchoProvider.Object,
                     MockGridProgramRuntimeInfo.Object,
                     MockLogger.Object);
 
                 MockParseOperation = new Mock<IBackgroundOperation>();
+
+                MockDockOperation = new Mock<IBackgroundOperation>();
+
+                MockUndockOperation = new Mock<IBackgroundOperation>();
             }
 
             public readonly Mock<IBackgroundWorker> MockBackgroundWorker;
 
             public readonly Mock<IConfigManager> MockConfigManager;
+
+            public readonly Mock<IDockingManager> MockDockingManager;
 
             public readonly Mock<IEchoProvider> MockEchoProvider;
 
@@ -58,6 +73,10 @@ namespace AutomatedDockingProcedures.Test
             public readonly ProgramManager Uut;
 
             public readonly Mock<IBackgroundOperation> MockParseOperation;
+
+            public readonly Mock<IBackgroundOperation> MockDockOperation;
+
+            public readonly Mock<IBackgroundOperation> MockUndockOperation;
         }
 
         #endregion Test Context
@@ -73,6 +92,9 @@ namespace AutomatedDockingProcedures.Test
 
             testContext.MockConfigManager
                 .ShouldHaveReceived(x => x.MakeParseOperation(), 1);
+
+            testContext.MockDockingManager
+                .Invocations.ShouldBeEmpty();
 
             testContext.MockBackgroundWorker
                 .ShouldHaveReceived(x => x.ScheduleOperation(testContext.MockParseOperation.Object));
@@ -91,7 +113,20 @@ namespace AutomatedDockingProcedures.Test
 
             testContext.Uut.Run(argument);
 
-            throw new IgnoreException("Not yet implemented");
+            testContext.MockConfigManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockDockingManager
+                .ShouldHaveReceived(x => x.MakeDockOperation());
+
+            testContext.MockBackgroundWorker
+                .ShouldHaveReceived(x => x.ScheduleOperation(testContext.MockDockOperation.Object));
+
+            testContext.MockGridProgramRuntimeInfo
+                .ShouldHaveReceivedSet(x => x.UpdateFrequency = It.Is<UpdateFrequency>(y => y.HasFlag(UpdateFrequency.Once)));
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
         }
 
         [TestCase("undock")]
@@ -101,7 +136,20 @@ namespace AutomatedDockingProcedures.Test
 
             testContext.Uut.Run(argument);
 
-            throw new IgnoreException("Not yet implemented");
+            testContext.MockConfigManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockDockingManager
+                .ShouldHaveReceived(x => x.MakeUndockOperation());
+
+            testContext.MockBackgroundWorker
+                .ShouldHaveReceived(x => x.ScheduleOperation(testContext.MockUndockOperation.Object));
+
+            testContext.MockGridProgramRuntimeInfo
+                .ShouldHaveReceivedSet(x => x.UpdateFrequency = It.Is<UpdateFrequency>(y => y.HasFlag(UpdateFrequency.Once)));
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
         }
 
         [TestCase("")]
@@ -116,6 +164,9 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.ExecuteOperations());
 
             testContext.MockConfigManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockDockingManager
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockGridProgramRuntimeInfo
@@ -139,6 +190,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConfigManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockDockingManager
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockGridProgramRuntimeInfo
