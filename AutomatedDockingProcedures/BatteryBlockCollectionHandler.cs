@@ -34,7 +34,10 @@ namespace IngameScript
             }
 
             public void OnCompleted()
-                => _logger.AddLine($"Discovered {_batteryBlockManager.BatteryBlocks.Count} batteries for management");
+            {
+                if(_batteryBlockManager.BatteryBlocks.Count > 0)
+                    _logger.AddLine($"Discovered {_batteryBlockManager.BatteryBlocks.Count} batteries for management");
+            }
 
             private readonly IBatteryBlockManager _batteryBlockManager;
 
