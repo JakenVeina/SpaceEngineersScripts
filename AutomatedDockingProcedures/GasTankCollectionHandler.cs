@@ -34,7 +34,10 @@ namespace IngameScript
             }
 
             public void OnCompleted()
-                => _logger.AddLine($"Discovered {_gasTankManager.GasTanks.Count} batteries for management");
+            {
+                if(_gasTankManager.GasTanks.Count > 0)
+                    _logger.AddLine($"Discovered {_gasTankManager.GasTanks.Count} gas tanks for management");
+            }
 
             private readonly IGasTankManager _gasTankManager;
 

@@ -11,6 +11,18 @@ namespace IngameScript
         {
             IReadOnlyList<IMyFunctionalBlock> FunctionalBlocks { get; }
 
+            int BeaconCount { get; }
+
+            int GasGeneratorCount { get; }
+
+            int GyroCount { get; }
+
+            int LightingBlockCount { get; }
+
+            int RadioAntennaCount { get; }
+
+            int ReactorCount { get; }
+
             void AddFunctionalBlock(IMyFunctionalBlock functionalBlock);
 
             void ClearFunctionalBlocks();
@@ -34,11 +46,53 @@ namespace IngameScript
             public IReadOnlyList<IMyFunctionalBlock> FunctionalBlocks
                 => _functionalBlocks;
 
+            public int BeaconCount
+                => _beaconCount;
+
+            public int GasGeneratorCount
+                => _gasGeneratorCount;
+
+            public int GyroCount
+                => _gyroCount;
+
+            public int LightingBlockCount
+                => _lightingBlockCount;
+
+            public int RadioAntennaCount
+                => _radioAntennaCount;
+
+            public int ReactorCount
+                => _reactorCount;
+
             public void AddFunctionalBlock(IMyFunctionalBlock functionalBlock)
-                => _functionalBlocks.Add(functionalBlock);
+            {
+                _functionalBlocks.Add(functionalBlock);
+
+                if (functionalBlock is IMyBeacon)
+                    ++_beaconCount;
+                else if (functionalBlock is IMyGasGenerator)
+                    ++_gasGeneratorCount;
+                else if (functionalBlock is IMyGyro)
+                    ++_gyroCount;
+                else if (functionalBlock is IMyLightingBlock)
+                    ++_lightingBlockCount;
+                else if (functionalBlock is IMyRadioAntenna)
+                    ++_radioAntennaCount;
+                else if (functionalBlock is IMyReactor)
+                    ++_reactorCount;
+            }
 
             public void ClearFunctionalBlocks()
-                => _functionalBlocks.Clear();
+            {
+                _functionalBlocks.Clear();
+
+                _beaconCount = 0;
+                _gasGeneratorCount = 0;
+                _gyroCount = 0;
+                _lightingBlockCount = 0;
+                _radioAntennaCount = 0;
+                _reactorCount = 0;
+            }
 
             public IBackgroundOperation MakeDisableOperation()
                 => _disableOperationPool.Get();
@@ -52,6 +106,18 @@ namespace IngameScript
             private readonly ObjectPool<DisableOperation> _disableOperationPool;
 
             private readonly ObjectPool<EnableOperation> _enableOperationPool;
+
+            private int _beaconCount;
+
+            private int _gasGeneratorCount;
+
+            private int _gyroCount;
+
+            private int _lightingBlockCount;
+
+            private int _radioAntennaCount;
+
+            private int _reactorCount;
 
             private abstract class FunctionalBlockOperationBase : IBackgroundOperation, IDisposable
             {

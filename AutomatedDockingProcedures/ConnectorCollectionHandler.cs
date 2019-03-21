@@ -32,7 +32,10 @@ namespace IngameScript
             }
 
             public void OnCompleted()
-                => _logger.AddLine($"Discovered {_connectorManager.Connectors.Count} batteries for management");
+            {
+                if(_connectorManager.Connectors.Count > 0)
+                    _logger.AddLine($"Discovered {_connectorManager.Connectors.Count} connectors for management");
+            }
 
             private readonly IConnectorManager _connectorManager;
 

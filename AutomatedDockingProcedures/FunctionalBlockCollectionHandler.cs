@@ -34,7 +34,21 @@ namespace IngameScript
             }
 
             public void OnCompleted()
-                => _logger.AddLine($"Discovered {_functionalBlockManager.FunctionalBlocks.Count} batteries for management");
+            {
+                if(_functionalBlockManager.BeaconCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.BeaconCount} beacons for management");
+                if(_functionalBlockManager.GasGeneratorCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.GasGeneratorCount} gas generators for management");
+                if(_functionalBlockManager.GyroCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.GyroCount} gyroscopes for management");
+                if(_functionalBlockManager.LightingBlockCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.LightingBlockCount} lighting blocks for management");
+                if(_functionalBlockManager.RadioAntennaCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.RadioAntennaCount} radio antennae for management");
+                if(_functionalBlockManager.ReactorCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.ReactorCount} reactors for management");
+
+            }
 
             private readonly IFunctionalBlockManager _functionalBlockManager;
 

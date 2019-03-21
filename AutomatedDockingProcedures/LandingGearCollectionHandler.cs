@@ -35,7 +35,10 @@ namespace IngameScript
             }
 
             public void OnCompleted()
-                => _logger.AddLine($"Discovered {_landingGearManager.LandingGears.Count} batteries for management");
+            {
+                if(_landingGearManager.LandingGears.Count > 0)
+                    _logger.AddLine($"Discovered {_landingGearManager.LandingGears.Count} landing gears for management");
+            }
 
             private readonly ILandingGearManager _landingGearManager;
 
