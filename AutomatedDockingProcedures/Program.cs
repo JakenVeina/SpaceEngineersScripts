@@ -17,7 +17,10 @@ namespace IngameScript
             {
                 managedBlockSettingsProvider
             };
-            var managerSettingsProvider = new ManagerSettingsProvider();
+            var managerSettingsProvider = new ManagerSettingsProvider()
+            {
+                DefaultBlockTag = "AutomatedDocking"
+            };
 
             var batteryBlockManager = new BatteryBlockManager();
             var connectorManager = new ConnectorManager();

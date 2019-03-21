@@ -22,7 +22,10 @@ namespace IngameScript
                 managedBlockSettingsProvider,
                 managedDoorSettingsProvider
             };
-            var managerSettingsProvider = new ManagerSettingsProvider();
+            var managerSettingsProvider = new ManagerSettingsProvider()
+            {
+                DefaultBlockTag = "DoorManager"
+            };
 
             var doorManager = new DoorManager(
                     dateTimeProvider,
