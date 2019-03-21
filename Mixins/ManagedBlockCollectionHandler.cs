@@ -68,7 +68,10 @@ namespace IngameScript
                         _result = BlockCollectionResult.Ignored;
 
                         if (!_owner._managerSettingsProvider.Settings.ManageOtherGrids && (Block.CubeGrid.EntityId != _owner._programmableBlock.CubeGrid.EntityId))
+                        {
+                            _result = BlockCollectionResult.Skipped;
                             return Complete();
+                        }
 
                         _hasParseBeenHandled = false;
 

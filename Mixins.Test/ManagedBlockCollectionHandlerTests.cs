@@ -220,7 +220,7 @@ namespace Mixins.Test
             testContext.MockManagedBlockConfigManager
                 .Invocations.Count.ShouldBe(0);
 
-            result.Result.IsIgnored.ShouldBeTrue();
+            result.Result.IsSkipped.ShouldBeTrue();
         }
 
         [TestCaseSource(nameof(BlockShouldBeManagedTestCases))]
