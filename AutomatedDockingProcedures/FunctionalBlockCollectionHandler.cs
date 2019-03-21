@@ -45,9 +45,10 @@ namespace IngameScript
                     _logger.AddLine($"Discovered {_functionalBlockManager.LightingBlockCount} lighting blocks for management");
                 if(_functionalBlockManager.RadioAntennaCount > 0)
                     _logger.AddLine($"Discovered {_functionalBlockManager.RadioAntennaCount} radio antennae for management");
-                if(_functionalBlockManager.ReactorCount > 0)
+                if (_functionalBlockManager.ReactorCount > 0)
                     _logger.AddLine($"Discovered {_functionalBlockManager.ReactorCount} reactors for management");
-
+                if (_functionalBlockManager.ThrusterCount > 0)
+                    _logger.AddLine($"Discovered {_functionalBlockManager.ThrusterCount} thrusters for management");
             }
 
             private readonly IFunctionalBlockManager _functionalBlockManager;
@@ -138,6 +139,17 @@ namespace IngameScript
                         if (reactor != null)
                         {
                             _owner._functionalBlockManager.AddFunctionalBlock(reactor);
+                            _result = BlockCollectionResult.Success;
+                            return BackgroundOperationResult.Completed;
+                        }
+                    }
+
+                    if (!_owner._dockingManagerSettingsProvider.Settings.IgnoreThrusters)
+                    {
+                        var thruster = Block as IMyThrust;
+                        if (thruster != null)
+                        {
+                            _owner._functionalBlockManager.AddFunctionalBlock(thruster);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }

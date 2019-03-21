@@ -32,6 +32,8 @@ namespace AutomatedDockingProcedures.Test
 
             public int ReactorCount;
 
+            public int ThrusterCount;
+
             public bool IgnoreBeacons
                 = false;
 
@@ -48,6 +50,9 @@ namespace AutomatedDockingProcedures.Test
                 = false;
 
             public bool IgnoreReactors
+                = false;
+
+            public bool IgnoreThrusters
                 = false;
 
             public bool IgnoreOtherBlocks
@@ -74,6 +79,9 @@ namespace AutomatedDockingProcedures.Test
                 MockFunctionalBlockManager
                     .Setup(x => x.ReactorCount)
                     .Returns(() => ReactorCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.ThrusterCount)
+                    .Returns(() => ThrusterCount);
 
                 MockLogger = new Mock<ILogger>();
 
@@ -90,7 +98,8 @@ namespace AutomatedDockingProcedures.Test
                         IgnoreLandingGears = IgnoreOtherBlocks,
                         IgnoreLightingBlocks = IgnoreLightingBlocks,
                         IgnoreRadioAntennae = IgnoreRadioAntennae,
-                        IgnoreReactors = IgnoreReactors
+                        IgnoreReactors = IgnoreReactors,
+                        IgnoreThrusters = IgnoreThrusters
                     });
 
                 Uut = new FunctionalBlockCollectionHandler(
@@ -155,18 +164,20 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsIgnored.ShouldBeTrue();
         }
 
-        [TestCase(typeof(IMyBeacon),        false, true,  true,  true,  true,  true,  true )]
-        [TestCase(typeof(IMyBeacon),        false, false, false, false, false, false, false)]
-        [TestCase(typeof(IMyGasGenerator),  true,  false, true,  true,  true,  true,  true )]
-        [TestCase(typeof(IMyGasGenerator),  false, false, false, false, false, false, false)]
-        [TestCase(typeof(IMyGyro),          true,  true,  false, true,  true,  true,  true )]
-        [TestCase(typeof(IMyGyro),          false, false, false, false, false, false, false)]
-        [TestCase(typeof(IMyLightingBlock), true,  true,  true,  false, true,  true,  true )]
-        [TestCase(typeof(IMyLightingBlock), false, false, false, false, false, false, false)]
-        [TestCase(typeof(IMyRadioAntenna),  true,  true,  true,  true,  false, true,  true )]
-        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, false, false, false)]
-        [TestCase(typeof(IMyReactor),       true,  true,  true,  true,  true,  false, true )]
-        [TestCase(typeof(IMyReactor),       false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyBeacon),        false, true,  true,  true,  true,  true,  true,  true )]
+        [TestCase(typeof(IMyBeacon),        false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyGasGenerator),  true,  false, true,  true,  true,  true,  true,  true )]
+        [TestCase(typeof(IMyGasGenerator),  false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyGyro),          true,  true,  false, true,  true,  true,  true,  true )]
+        [TestCase(typeof(IMyGyro),          false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyLightingBlock), true,  true,  true,  false, true,  true,  true,  true )]
+        [TestCase(typeof(IMyLightingBlock), false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyRadioAntenna),  true,  true,  true,  true,  false, true,  true,  true )]
+        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyReactor),       true,  true,  true,  true,  true,  false, true,  true )]
+        [TestCase(typeof(IMyReactor),       false, false, false, false, false, false, false, false)]
+        [TestCase(typeof(IMyThrust),        true,  true,  true,  true,  true,  true,  false, true )]
+        [TestCase(typeof(IMyThrust),        false, false, false, false, false, false, false, false)]
         public void MakeCollectBlockOperation_BlockIsRelevantFunctionalBlock_AddsFunctionalBlock(
             Type blockType,
             bool ignoreBeacons,
@@ -175,6 +186,7 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreLightingBlocks,
             bool ignoreRadioAntennae,
             bool ignoreReactors,
+            bool ignoreThrusters,
             bool ignoreOtherBlocks)
         {
             var testContext = new TestContext()
@@ -185,6 +197,7 @@ namespace AutomatedDockingProcedures.Test
                 IgnoreLightingBlocks = ignoreLightingBlocks,
                 IgnoreRadioAntennae = ignoreRadioAntennae,
                 IgnoreReactors = ignoreReactors,
+                IgnoreThrusters = ignoreThrusters,
                 IgnoreOtherBlocks = ignoreOtherBlocks
             };
 
@@ -202,12 +215,13 @@ namespace AutomatedDockingProcedures.Test
             result.Result.IsSuccess.ShouldBeTrue();
         }
 
-        [TestCase(typeof(IMyBeacon),        true,  false, false, false, false, false)]
-        [TestCase(typeof(IMyGasGenerator),  false, true,  false, false, false, false)]
-        [TestCase(typeof(IMyGyro),          false, false, true,  false, false, false)]
-        [TestCase(typeof(IMyLightingBlock), false, false, false, true,  false, false)]
-        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, true,  false)]
-        [TestCase(typeof(IMyReactor),       false, false, false, false, false, true )]
+        [TestCase(typeof(IMyBeacon),        true,  false, false, false, false, false, false)]
+        [TestCase(typeof(IMyGasGenerator),  false, true,  false, false, false, false, false)]
+        [TestCase(typeof(IMyGyro),          false, false, true,  false, false, false, false)]
+        [TestCase(typeof(IMyLightingBlock), false, false, false, true,  false, false, false)]
+        [TestCase(typeof(IMyRadioAntenna),  false, false, false, false, true,  false, false)]
+        [TestCase(typeof(IMyReactor),       false, false, false, false, false, true,  false)]
+        [TestCase(typeof(IMyThrust),        false, false, false, false, false, false, true )]
         public void MakeCollectBlockOperation_BlockTypeIsIgnored_IgnoresBlock(
             Type blockType,
             bool ignoreBeacons,
@@ -215,7 +229,8 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreGyros,
             bool ignoreLightingBlocks,
             bool ignoreRadioAntennae,
-            bool ignoreReactors)
+            bool ignoreReactors,
+            bool ignoreThrusters)
         {
             var testContext = new TestContext()
             {
@@ -224,7 +239,8 @@ namespace AutomatedDockingProcedures.Test
                 IgnoreGyros = ignoreGyros,
                 IgnoreLightingBlocks = ignoreLightingBlocks,
                 IgnoreRadioAntennae = ignoreRadioAntennae,
-                IgnoreReactors = ignoreReactors
+                IgnoreReactors = ignoreReactors,
+                IgnoreThrusters = ignoreThrusters
             };
 
             var mockBlock = testContext.MakeFakeBlock(blockType);
@@ -247,6 +263,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(typeof(IMyRadioAntenna))]
         [TestCase(typeof(IMyGasGenerator))]
         [TestCase(typeof(IMyReactor))]
+        [TestCase(typeof(IMyThrust))]
         public void MakeCollectBlockOperation_OperationIsDisposed_RecyclesOperation(Type blockType)
         {
             var testContext = new TestContext();
@@ -465,14 +482,44 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(reactorCount.ToString()))));
         }
 
-        [TestCase(1, 2, 3, 4, 5, 6)]
+        [Test]
+        public void OnCompleted_ThrusterCountIs0_DoesNotLogThrusterCount()
+        {
+            var testContext = new TestContext()
+            {
+                ThrusterCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_ThrusterCountIsGreaterThan0_LogsThrusterCount(int thrusterCount)
+        {
+            var testContext = new TestContext()
+            {
+                ThrusterCount = thrusterCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(thrusterCount.ToString()))));
+        }
+
+        [TestCase(1, 2, 3, 4, 5, 6, 7)]
         public void OnCompleted_FunctionalBlockCountsAreAllGreaterThan0_LogsAllFunctionalBlockCounts(
             int beaconCount,
             int gasGeneratorCount,
             int gyroCount,
             int lightingBlockCount,
             int radioAntennaCount,
-            int reactorCount)
+            int reactorCount,
+            int thrusterCount)
         {
             var testContext = new TestContext()
             {
@@ -481,7 +528,8 @@ namespace AutomatedDockingProcedures.Test
                 GyroCount = gyroCount,
                 LightingBlockCount = lightingBlockCount,
                 RadioAntennaCount = radioAntennaCount,
-                ReactorCount = reactorCount
+                ReactorCount = reactorCount,
+                ThrusterCount = thrusterCount
             };
 
             testContext.Uut.OnCompleted();
@@ -498,6 +546,8 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(radioAntennaCount.ToString()))));
             testContext.MockLogger
                 .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(reactorCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(thrusterCount.ToString()))));
         }
 
         #endregion OnCompleted() Tests

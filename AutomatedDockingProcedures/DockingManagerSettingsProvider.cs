@@ -30,7 +30,8 @@ namespace IngameScript
                     IgnoreLandingGears   = false,
                     IgnoreLightingBlocks = false,
                     IgnoreRadioAntennae  = false,
-                    IgnoreReactors       = false
+                    IgnoreReactors       = false,
+                    IgnoreThrusters      = false
                 };
             }
 
@@ -117,6 +118,14 @@ namespace IngameScript
                 return ParseResult.Success;
             }
 
+            private static ParseResult ParseIgnoreThrusters(DockingManagerSettingsProvider @this, ConfigLine configLine)
+            {
+                if (configLine.ParamCount != 0)
+                    return ParseResult.FromError("Usage: \"ignore-thrusters\"");
+                @this._settings.IgnoreThrusters = true;
+                return ParseResult.Success;
+            }
+
             private DockingManagerSettings _settings;
 
             private static readonly Dictionary<string, Func<DockingManagerSettingsProvider, ConfigLine, ParseResult>> _parsersByOption
@@ -130,7 +139,8 @@ namespace IngameScript
                     ["ignore-landing-gears"]   = ParseIgnoreLandingGears,
                     ["ignore-lighting-blocks"] = ParseIgnoreLightingBlocks,
                     ["ignore-radio-antennae"]  = ParseIgnoreRadioAntennae,
-                    ["ignore-reactors"]        = ParseIgnoreReactors
+                    ["ignore-reactors"]        = ParseIgnoreReactors,
+                    ["ignore-thrusters"]       = ParseIgnoreThrusters
                 };
         }
     }

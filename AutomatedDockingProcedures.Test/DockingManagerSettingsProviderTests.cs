@@ -10,17 +10,18 @@ namespace AutomatedDockingProcedures.Test
     {
         #region Settings Tests
 
-        [TestCase(false, false, false, false, false, false, false, false, false)]
-        [TestCase(true,  false, false, false, false, false, false, false, false)]
-        [TestCase(false, true,  false, false, false, false, false, false, false)]
-        [TestCase(false, false, true,  false, false, false, false, false, false)]
-        [TestCase(false, false, false, true,  false, false, false, false, false)]
-        [TestCase(false, false, false, false, true,  false, false, false, false)]
-        [TestCase(false, false, false, false, false, true,  false, false, false)]
-        [TestCase(false, false, false, false, false, false, true,  false, false)]
-        [TestCase(false, false, false, false, false, false, false, true,  false)]
-        [TestCase(false, false, false, false, false, false, false, false, true )]
-        [TestCase(true,  true,  true,  true,  true,  true,  true,  true,  true )]
+        [TestCase(false, false, false, false, false, false, false, false, false, false)]
+        [TestCase(true,  false, false, false, false, false, false, false, false, false)]
+        [TestCase(false, true,  false, false, false, false, false, false, false, false)]
+        [TestCase(false, false, true,  false, false, false, false, false, false, false)]
+        [TestCase(false, false, false, true,  false, false, false, false, false, false)]
+        [TestCase(false, false, false, false, true,  false, false, false, false, false)]
+        [TestCase(false, false, false, false, false, true,  false, false, false, false)]
+        [TestCase(false, false, false, false, false, false, true,  false, false, false)]
+        [TestCase(false, false, false, false, false, false, false, true,  false, false)]
+        [TestCase(false, false, false, false, false, false, false, false, true,  false)]
+        [TestCase(false, false, false, false, false, false, false, false, false, true )]
+        [TestCase(true,  true,  true,  true,  true,  true,  true,  true,  true,  true )]
         public void Settings_Always_SavesValue(
             bool ignoreBatteryBlocks,
             bool ignoreBeacons,
@@ -30,7 +31,8 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreLandingGears,
             bool ignoreLightingBlocks,
             bool ignoreRadioAntennae,
-            bool ignoreReactors)
+            bool ignoreReactors,
+            bool ignoreThrusters)
         {
             var uut = new DockingManagerSettingsProvider();
 
@@ -44,7 +46,8 @@ namespace AutomatedDockingProcedures.Test
                 IgnoreLandingGears   = ignoreLandingGears,
                 IgnoreLightingBlocks = ignoreLightingBlocks,
                 IgnoreRadioAntennae  = ignoreRadioAntennae,
-                IgnoreReactors       = ignoreReactors
+                IgnoreReactors       = ignoreReactors,
+                IgnoreThrusters      = ignoreThrusters
             };
 
             uut.Settings = settings;
@@ -72,6 +75,7 @@ namespace AutomatedDockingProcedures.Test
             uut.Settings.IgnoreLightingBlocks.ShouldBe(false);
             uut.Settings.IgnoreRadioAntennae .ShouldBe(false);
             uut.Settings.IgnoreReactors      .ShouldBe(false);
+            uut.Settings.IgnoreThrusters     .ShouldBe(false);
         }
 
         #endregion OnStarting() Tests
@@ -105,6 +109,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase("ignore-lighting-blocks", "bogus-param")]
         [TestCase("ignore-radio-antennae",  "bogus-param")]
         [TestCase("ignore-reactors",        "bogus-param")]
+        [TestCase("ignore-thrusters",       "bogus-param")]
         public void OnParsing_ParamsAreInvalid_ReturnsErrorAndDoesNotChangeSettings(params string[] linePieces)
         {
             var configLine = new ConfigLine(linePieces);
@@ -274,21 +279,39 @@ namespace AutomatedDockingProcedures.Test
             uut.Settings.ShouldBe(settings);
         }
 
+        [TestCase("ignore-thrusters")]
+        public void OnParsing_ParamsAreValidForIgnoreThrusters_ReturnsSuccessAndSetsIgnoreThrusters(params string[] linePieces)
+        {
+            var configLine = new ConfigLine(linePieces);
+
+            var uut = new DockingManagerSettingsProvider();
+
+            var settings = uut.Settings;
+            settings.IgnoreThrusters = true;
+
+            var result = uut.OnParsing(configLine);
+
+            result.IsSuccess.ShouldBeTrue();
+
+            uut.Settings.ShouldBe(settings);
+        }
+
         #endregion OnParsing() Tests
 
         #region OnCompleted() Tests
 
-        [TestCase(false, false, false, false, false, false, false, false, false)]
-        [TestCase(true,  false, false, false, false, false, false, false, false)]
-        [TestCase(false, true,  false, false, false, false, false, false, false)]
-        [TestCase(false, false, true,  false, false, false, false, false, false)]
-        [TestCase(false, false, false, true,  false, false, false, false, false)]
-        [TestCase(false, false, false, false, true,  false, false, false, false)]
-        [TestCase(false, false, false, false, false, true,  false, false, false)]
-        [TestCase(false, false, false, false, false, false, true,  false, false)]
-        [TestCase(false, false, false, false, false, false, false, true,  false)]
-        [TestCase(false, false, false, false, false, false, false, false, true )]
-        [TestCase(true,  true,  true,  true,  true,  true,  true,  true,  true )]
+        [TestCase(false, false, false, false, false, false, false, false, false, false)]
+        [TestCase(true,  false, false, false, false, false, false, false, false, false)]
+        [TestCase(false, true,  false, false, false, false, false, false, false, false)]
+        [TestCase(false, false, true,  false, false, false, false, false, false, false)]
+        [TestCase(false, false, false, true,  false, false, false, false, false, false)]
+        [TestCase(false, false, false, false, true,  false, false, false, false, false)]
+        [TestCase(false, false, false, false, false, true,  false, false, false, false)]
+        [TestCase(false, false, false, false, false, false, true,  false, false, false)]
+        [TestCase(false, false, false, false, false, false, false, true,  false, false)]
+        [TestCase(false, false, false, false, false, false, false, false, true,  false)]
+        [TestCase(false, false, false, false, false, false, false, false, false, true )]
+        [TestCase(true,  true,  true,  true,  true,  true,  true,  true,  true,  true )]
         public void OnCompleted_Always_DoesNothing(
             bool ignoreBatteryBlocks,
             bool ignoreBeacons,
@@ -298,7 +321,8 @@ namespace AutomatedDockingProcedures.Test
             bool ignoreLandingGears,
             bool ignoreLightingBlocks,
             bool ignoreRadioAntennae,
-            bool ignoreReactors)
+            bool ignoreReactors,
+            bool ignoreThrusters)
         {
             var uut = new DockingManagerSettingsProvider();
 
@@ -312,7 +336,8 @@ namespace AutomatedDockingProcedures.Test
                 IgnoreLandingGears   = ignoreLandingGears,
                 IgnoreLightingBlocks = ignoreLightingBlocks,
                 IgnoreRadioAntennae  = ignoreRadioAntennae,
-                IgnoreReactors       = ignoreReactors
+                IgnoreReactors       = ignoreReactors,
+                IgnoreThrusters      = ignoreThrusters
             };
 
             uut.OnCompleted();
@@ -336,6 +361,7 @@ namespace AutomatedDockingProcedures.Test
             settings.IgnoreLightingBlocks.ShouldBe(settings.IgnoreLightingBlocks);
             settings.IgnoreRadioAntennae .ShouldBe(settings.IgnoreRadioAntennae);
             settings.IgnoreReactors      .ShouldBe(settings.IgnoreReactors);
+            settings.IgnoreThrusters     .ShouldBe(settings.IgnoreThrusters);
         }
     }
 }

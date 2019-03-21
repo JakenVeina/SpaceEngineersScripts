@@ -23,6 +23,8 @@ namespace IngameScript
 
             int ReactorCount { get; }
 
+            int ThrusterCount { get; }
+
             void AddFunctionalBlock(IMyFunctionalBlock functionalBlock);
 
             void ClearFunctionalBlocks();
@@ -64,6 +66,9 @@ namespace IngameScript
             public int ReactorCount
                 => _reactorCount;
 
+            public int ThrusterCount
+                => _thrusterCount;
+
             public void AddFunctionalBlock(IMyFunctionalBlock functionalBlock)
             {
                 _functionalBlocks.Add(functionalBlock);
@@ -80,6 +85,8 @@ namespace IngameScript
                     ++_radioAntennaCount;
                 else if (functionalBlock is IMyReactor)
                     ++_reactorCount;
+                else if (functionalBlock is IMyThrust)
+                    ++_thrusterCount;
             }
 
             public void ClearFunctionalBlocks()
@@ -92,6 +99,7 @@ namespace IngameScript
                 _lightingBlockCount = 0;
                 _radioAntennaCount = 0;
                 _reactorCount = 0;
+                _thrusterCount = 0;
             }
 
             public IBackgroundOperation MakeDisableOperation()
@@ -118,6 +126,8 @@ namespace IngameScript
             private int _radioAntennaCount;
 
             private int _reactorCount;
+
+            private int _thrusterCount;
 
             private abstract class FunctionalBlockOperationBase : IBackgroundOperation, IDisposable
             {

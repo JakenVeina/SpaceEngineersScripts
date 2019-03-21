@@ -73,6 +73,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         [TestCase(0)]
@@ -99,6 +100,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         [TestCase(0)]
@@ -125,6 +127,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         [TestCase(0)]
@@ -151,6 +154,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(mockExistingLightingBlockCount + 1);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         [TestCase(0)]
@@ -177,6 +181,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(mockExistingRadioAntennaCount + 1);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         [TestCase(0)]
@@ -203,6 +208,34 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(mockExistingReactorCount + 1);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsThruster_IncrementsThrusterCount(int mockExistingThrusterCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingThrusters = Enumerable.Repeat(0, mockExistingThrusterCount)
+                .Select(_ => new Mock<IMyThrust>())
+                .ToArray();
+
+            foreach (var mockExistingThruster in mockExistingThrusters)
+                testContext.Uut.AddFunctionalBlock(mockExistingThruster.Object);
+
+            var mockThruster = new Mock<IMyThrust>();
+
+            testContext.Uut.AddFunctionalBlock(mockThruster.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(mockExistingThrusterCount + 1);
         }
 
         #endregion AddFunctionalBlock() Tests
@@ -239,6 +272,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.AddFunctionalBlock(new Mock<IMyLightingBlock>().Object);
             testContext.Uut.AddFunctionalBlock(new Mock<IMyRadioAntenna>().Object);
             testContext.Uut.AddFunctionalBlock(new Mock<IMyReactor>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyThrust>().Object);
 
             testContext.Uut.ClearFunctionalBlocks();
 
@@ -248,6 +282,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.LightingBlockCount.ShouldBe(0);
             testContext.Uut.RadioAntennaCount.ShouldBe(0);
             testContext.Uut.ReactorCount.ShouldBe(0);
+            testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
         #endregion ClearFunctionalBlocks() Tests

@@ -21,6 +21,8 @@
             public bool IgnoreRadioAntennae { get; set; }
 
             public bool IgnoreReactors { get; set; }
+
+            public bool IgnoreThrusters { get; set; }
         }
     }
 }
