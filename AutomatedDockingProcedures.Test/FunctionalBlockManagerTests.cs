@@ -49,6 +49,162 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.FunctionalBlocks.ShouldContain(mockFunctionalBlock.Object);
         }
 
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsBeacon_IncrementsBeaconCount(int mockExistingBeaconCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingBeacons = Enumerable.Repeat(0, mockExistingBeaconCount)
+                .Select(_ => new Mock<IMyBeacon>())
+                .ToArray();
+
+            foreach (var mockExistingBeacon in mockExistingBeacons)
+                testContext.Uut.AddFunctionalBlock(mockExistingBeacon.Object);
+
+            var mockBeacon = new Mock<IMyBeacon>();
+
+            testContext.Uut.AddFunctionalBlock(mockBeacon.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(mockExistingBeaconCount + 1);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsGasGenerator_IncrementsGasGeneratorCount(int mockExistingGasGeneratorCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingGasGenerators = Enumerable.Repeat(0, mockExistingGasGeneratorCount)
+                .Select(_ => new Mock<IMyGasGenerator>())
+                .ToArray();
+
+            foreach (var mockExistingGasGenerator in mockExistingGasGenerators)
+                testContext.Uut.AddFunctionalBlock(mockExistingGasGenerator.Object);
+
+            var mockGasGenerator = new Mock<IMyGasGenerator>();
+
+            testContext.Uut.AddFunctionalBlock(mockGasGenerator.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(mockExistingGasGeneratorCount + 1);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsGyro_IncrementsGyroCount(int mockExistingGyroCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingGyros = Enumerable.Repeat(0, mockExistingGyroCount)
+                .Select(_ => new Mock<IMyGyro>())
+                .ToArray();
+
+            foreach (var mockExistingGyro in mockExistingGyros)
+                testContext.Uut.AddFunctionalBlock(mockExistingGyro.Object);
+
+            var mockGyro = new Mock<IMyGyro>();
+
+            testContext.Uut.AddFunctionalBlock(mockGyro.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(mockExistingGyroCount + 1);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsLightingBlock_IncrementsLightingBlockCount(int mockExistingLightingBlockCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingLightingBlocks = Enumerable.Repeat(0, mockExistingLightingBlockCount)
+                .Select(_ => new Mock<IMyLightingBlock>())
+                .ToArray();
+
+            foreach (var mockExistingLightingBlock in mockExistingLightingBlocks)
+                testContext.Uut.AddFunctionalBlock(mockExistingLightingBlock.Object);
+
+            var mockLightingBlock = new Mock<IMyLightingBlock>();
+
+            testContext.Uut.AddFunctionalBlock(mockLightingBlock.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(mockExistingLightingBlockCount + 1);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsRadioAntenna_IncrementsRadioAntennaCount(int mockExistingRadioAntennaCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingRadioAntennas = Enumerable.Repeat(0, mockExistingRadioAntennaCount)
+                .Select(_ => new Mock<IMyRadioAntenna>())
+                .ToArray();
+
+            foreach (var mockExistingRadioAntenna in mockExistingRadioAntennas)
+                testContext.Uut.AddFunctionalBlock(mockExistingRadioAntenna.Object);
+
+            var mockRadioAntenna = new Mock<IMyRadioAntenna>();
+
+            testContext.Uut.AddFunctionalBlock(mockRadioAntenna.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(mockExistingRadioAntennaCount + 1);
+            testContext.Uut.ReactorCount.ShouldBe(0);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(10)]
+        public void AddFunctionalBlock_BlockIsReactor_IncrementsReactorCount(int mockExistingReactorCount)
+        {
+            var testContext = new TestContext();
+
+            var mockExistingReactors = Enumerable.Repeat(0, mockExistingReactorCount)
+                .Select(_ => new Mock<IMyReactor>())
+                .ToArray();
+
+            foreach (var mockExistingReactor in mockExistingReactors)
+                testContext.Uut.AddFunctionalBlock(mockExistingReactor.Object);
+
+            var mockReactor = new Mock<IMyReactor>();
+
+            testContext.Uut.AddFunctionalBlock(mockReactor.Object);
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(mockExistingReactorCount + 1);
+        }
+
         #endregion AddFunctionalBlock() Tests
 
         #region ClearFunctionalBlocks() Tests
@@ -70,6 +226,28 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.ClearFunctionalBlocks();
 
             testContext.Uut.FunctionalBlocks.ShouldBeEmpty();
+        }
+
+        [Test]
+        public void ClearFunctionalBlocks_Always_ClearsBlockCounts()
+        {
+            var testContext = new TestContext();
+
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyBeacon>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyGasGenerator>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyGyro>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyLightingBlock>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyRadioAntenna>().Object);
+            testContext.Uut.AddFunctionalBlock(new Mock<IMyReactor>().Object);
+
+            testContext.Uut.ClearFunctionalBlocks();
+
+            testContext.Uut.BeaconCount.ShouldBe(0);
+            testContext.Uut.GasGeneratorCount.ShouldBe(0);
+            testContext.Uut.GyroCount.ShouldBe(0);
+            testContext.Uut.LightingBlockCount.ShouldBe(0);
+            testContext.Uut.RadioAntennaCount.ShouldBe(0);
+            testContext.Uut.ReactorCount.ShouldBe(0);
         }
 
         #endregion ClearFunctionalBlocks() Tests

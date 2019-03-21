@@ -200,10 +200,23 @@ namespace AutomatedDockingProcedures.Test
 
         #region OnCompleted() Tests
 
-        [TestCase(0)]
+        [Test]
+        public void OnCompleted_GasTankCountIs0_DoesNotLogGasTankCount()
+        {
+            var testContext = new TestContext()
+            {
+                GasTankCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
         [TestCase(1)]
         [TestCase(10)]
-        public void OnCompleted_Always_LogsGasTankCount(int gasTankCount)
+        public void OnCompleted_GasTankCountIsGreaterThan0_LogsGasTankCount(int gasTankCount)
         {
             var testContext = new TestContext()
             {

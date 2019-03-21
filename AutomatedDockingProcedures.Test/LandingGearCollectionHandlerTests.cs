@@ -201,7 +201,20 @@ namespace AutomatedDockingProcedures.Test
 
         #region OnCompleted() Tests
 
-        [TestCase(0)]
+        [Test]
+        public void OnCompleted_LandingGearCountIs0_DoesNotLogLandingGearCount()
+        {
+            var testContext = new TestContext()
+            {
+                LandingGearCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
         [TestCase(1)]
         [TestCase(10)]
         public void OnCompleted_Always_LogsLandingGearCount(int landingGearCount)

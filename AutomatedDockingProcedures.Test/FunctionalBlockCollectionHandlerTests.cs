@@ -20,7 +20,17 @@ namespace AutomatedDockingProcedures.Test
 
         private class TestContext
         {
-            public int FunctionalBlockCount;
+            public int BeaconCount;
+
+            public int GasGeneratorCount;
+
+            public int GyroCount;
+
+            public int LightingBlockCount;
+
+            public int RadioAntennaCount;
+
+            public int ReactorCount;
 
             public bool IgnoreBeacons
                 = false;
@@ -47,8 +57,23 @@ namespace AutomatedDockingProcedures.Test
             {
                 MockFunctionalBlockManager = new Mock<IFunctionalBlockManager>();
                 MockFunctionalBlockManager
-                    .Setup(x => x.FunctionalBlocks.Count)
-                    .Returns(() => FunctionalBlockCount);
+                    .Setup(x => x.BeaconCount)
+                    .Returns(() => BeaconCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.GasGeneratorCount)
+                    .Returns(() => GasGeneratorCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.GyroCount)
+                    .Returns(() => GyroCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.LightingBlockCount)
+                    .Returns(() => LightingBlockCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.RadioAntennaCount)
+                    .Returns(() => RadioAntennaCount);
+                MockFunctionalBlockManager
+                    .Setup(x => x.ReactorCount)
+                    .Returns(() => ReactorCount);
 
                 MockLogger = new Mock<ILogger>();
 
@@ -266,20 +291,213 @@ namespace AutomatedDockingProcedures.Test
 
         #region OnCompleted() Tests
 
-        [TestCase(0)]
-        [TestCase(1)]
-        [TestCase(10)]
-        public void OnCompleted_Always_LogsFunctionalBlockCount(int functionalBlockCount)
+        [Test]
+        public void OnCompleted_BeaconCountIs0_DoesNotLogBeaconCount()
         {
             var testContext = new TestContext()
             {
-                FunctionalBlockCount = functionalBlockCount
+                BeaconCount = 0
             };
 
             testContext.Uut.OnCompleted();
 
             testContext.MockLogger
-                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(functionalBlockCount.ToString()))));
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_BeaconCountIsGreaterThan0_LogsBeaconCount(int beaconCount)
+        {
+            var testContext = new TestContext()
+            {
+                BeaconCount = beaconCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(beaconCount.ToString()))));
+        }
+
+        [Test]
+        public void OnCompleted_GasGeneratorCountIs0_DoesNotLogGasGeneratorCount()
+        {
+            var testContext = new TestContext()
+            {
+                GasGeneratorCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_GasGeneratorCountIsGreaterThan0_LogsGasGeneratorCount(int gasGeneratorCount)
+        {
+            var testContext = new TestContext()
+            {
+                GasGeneratorCount = gasGeneratorCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(gasGeneratorCount.ToString()))));
+        }
+
+        [Test]
+        public void OnCompleted_GyroCountIs0_DoesNotLogGyroCount()
+        {
+            var testContext = new TestContext()
+            {
+                GyroCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_GyroCountIsGreaterThan0_LogsGyroCount(int gyroCount)
+        {
+            var testContext = new TestContext()
+            {
+                GyroCount = gyroCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(gyroCount.ToString()))));
+        }
+
+        [Test]
+        public void OnCompleted_LightingBlockCountIs0_DoesNotLogLightingBlockCount()
+        {
+            var testContext = new TestContext()
+            {
+                LightingBlockCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_LightingBlockCountIsGreaterThan0_LogsLightingBlockCount(int lightingBlockCount)
+        {
+            var testContext = new TestContext()
+            {
+                LightingBlockCount = lightingBlockCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(lightingBlockCount.ToString()))));
+        }
+
+        [Test]
+        public void OnCompleted_RadioAntennaCountIs0_DoesNotLogRadioAntennaCount()
+        {
+            var testContext = new TestContext()
+            {
+                RadioAntennaCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_RadioAntennaCountIsGreaterThan0_LogsRadioAntennaCount(int radioAntennaCount)
+        {
+            var testContext = new TestContext()
+            {
+                RadioAntennaCount = radioAntennaCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(radioAntennaCount.ToString()))));
+        }
+
+        [Test]
+        public void OnCompleted_ReactorCountIs0_DoesNotLogReactorCount()
+        {
+            var testContext = new TestContext()
+            {
+                ReactorCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        public void OnCompleted_ReactorCountIsGreaterThan0_LogsReactorCount(int reactorCount)
+        {
+            var testContext = new TestContext()
+            {
+                ReactorCount = reactorCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(reactorCount.ToString()))));
+        }
+
+        [TestCase(1, 2, 3, 4, 5, 6)]
+        public void OnCompleted_FunctionalBlockCountsAreAllGreaterThan0_LogsAllFunctionalBlockCounts(
+            int beaconCount,
+            int gasGeneratorCount,
+            int gyroCount,
+            int lightingBlockCount,
+            int radioAntennaCount,
+            int reactorCount)
+        {
+            var testContext = new TestContext()
+            {
+                BeaconCount = beaconCount,
+                GasGeneratorCount = gasGeneratorCount,
+                GyroCount = gyroCount,
+                LightingBlockCount = lightingBlockCount,
+                RadioAntennaCount = radioAntennaCount,
+                ReactorCount = reactorCount
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(beaconCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(gasGeneratorCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(gyroCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(lightingBlockCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(radioAntennaCount.ToString()))));
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.Contains(reactorCount.ToString()))));
         }
 
         #endregion OnCompleted() Tests

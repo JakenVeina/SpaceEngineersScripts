@@ -200,10 +200,23 @@ namespace AutomatedDockingProcedures.Test
 
         #region OnCompleted() Tests
 
-        [TestCase(0)]
+        [Test]
+        public void OnCompleted_BatteryBlockCountIs0_DoesNotLogBatteryBlockCount()
+        {
+            var testContext = new TestContext()
+            {
+                BatteryBlockCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
         [TestCase(1)]
         [TestCase(10)]
-        public void OnCompleted_Always_LogsBatteryBlockCount(int batteryBlockCount)
+        public void OnCompleted_BatteryBlockCountIsGreaterThan0_LogsBatteryBlockCount(int batteryBlockCount)
         {
             var testContext = new TestContext()
             {

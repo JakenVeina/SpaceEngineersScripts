@@ -149,10 +149,23 @@ namespace AutomatedDockingProcedures.Test
 
         #region OnCompleted() Tests
 
-        [TestCase(0)]
+        [Test]
+        public void OnCompleted_ConnectorCountIs0_DoesNotLogConnectorCount()
+        {
+            var testContext = new TestContext()
+            {
+                ConnectorCount = 0
+            };
+
+            testContext.Uut.OnCompleted();
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
         [TestCase(1)]
         [TestCase(10)]
-        public void OnCompleted_Always_LogsConnectorCount(int connectorCount)
+        public void OnCompleted_ConnectorCountIsGreaterThan0_LogsConnectorCount(int connectorCount)
         {
             var testContext = new TestContext()
             {
