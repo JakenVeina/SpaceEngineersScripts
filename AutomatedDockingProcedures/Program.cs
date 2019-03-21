@@ -107,6 +107,8 @@ namespace IngameScript
                 echoProvider,
                 Runtime,
                 logger);
+
+            _programManager.Run("reload");
         }
 
         public void Main(string argument)
