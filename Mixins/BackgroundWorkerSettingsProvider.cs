@@ -17,7 +17,7 @@ namespace IngameScript
                 // but if we don't initialize this to something non-zero, the config parse will never be able to run.
                 _settings = new BackgroundWorkerSettings()
                 {
-                    InstructionsPerExecution = 1000
+                    InstructionsPerTick = 1000
                 };
             }
 
@@ -30,20 +30,20 @@ namespace IngameScript
             public void OnStarting()
                 => _settings = new BackgroundWorkerSettings()
                 {
-                    InstructionsPerExecution = 1000
+                    InstructionsPerTick = 1000
                 };
 
             public ParseResult OnParsing(ConfigLine configLine)
             {
                 switch (configLine.Option)
                 {
-                    case "instructions-per-execution":
-                        int instructionsPerExecution;
+                    case "instructions-per-tick":
+                        int instructionsPerTick;
                         if ((configLine.ParamCount != 1) 
-                                || !int.TryParse(configLine.GetParam(0), out instructionsPerExecution)
-                                || (instructionsPerExecution < 1))
-                            return ParseResult.FromError("Usage: \"instructions-per-execution:[InstructionsPerExecution (> 0)]\"");
-                        _settings.InstructionsPerExecution = instructionsPerExecution;
+                                || !int.TryParse(configLine.GetParam(0), out instructionsPerTick)
+                                || (instructionsPerTick < 1))
+                            return ParseResult.FromError("Usage: \"instructions-per-tick:[InstructionsPerTick (> 0)]\"");
+                        _settings.InstructionsPerTick = instructionsPerTick;
                         return ParseResult.Success;
 
                     default:

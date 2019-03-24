@@ -4,7 +4,7 @@
     {
         public struct BackgroundWorkerSettings
         {
-            public int InstructionsPerExecution;
+            public int InstructionsPerTick;
         }
     }
 }

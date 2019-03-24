@@ -26,7 +26,7 @@ namespace Mixins.Test
                     .Setup(x => x.Settings)
                     .Returns(() => new BackgroundWorkerSettings()
                     {
-                        InstructionsPerExecution = InstructionsPerExecution
+                        InstructionsPerTick = InstructionsPerExecution
                     });
 
                 MockDateTimeProvider = new Mock<IDateTimeProvider>();

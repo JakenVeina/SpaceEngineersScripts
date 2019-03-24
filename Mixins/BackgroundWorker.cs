@@ -73,7 +73,7 @@ namespace IngameScript
                     return;
                 }
 
-                while (_gridProgramRuntimeInfo.CurrentInstructionCount < _backgroundWorkerSettingsProvider.Settings.InstructionsPerExecution)
+                while (_gridProgramRuntimeInfo.CurrentInstructionCount < _backgroundWorkerSettingsProvider.Settings.InstructionsPerTick)
                 {
                     if (_scheduledSubOperations.Count > 0)
                     {
