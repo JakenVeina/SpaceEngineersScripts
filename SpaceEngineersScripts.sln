@@ -21,6 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedDockingProcedures"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedDockingProcedures.Test", "AutomatedDockingProcedures.Test\AutomatedDockingProcedures.Test.csproj", "{8117CC9C-3C2B-4582-A3B9-529D49502E06}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA3D6DA5-FF86-4151-8F93-FB06A51A10F2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Mixins.Test.Common\Mixins.Test.Common.projitems*{510a6e26-959f-4222-ac5b-55f8058789eb}*SharedItemsImports = 4
