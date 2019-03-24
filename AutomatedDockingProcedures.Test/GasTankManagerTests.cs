@@ -3,6 +3,7 @@
 using Moq;
 using NUnit.Framework;
 using Shouldly;
+
 using static IngameScript.Program;
 
 using Sandbox.ModAPI.Ingame;
@@ -26,190 +27,190 @@ namespace AutomatedDockingProcedures.Test
 
         #endregion Test Context
 
-        #region AddGasTank() Tests
+        #region AddBlock() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddGasTank_Always_AddsGasTank(int existingGasTankCount)
+        public void AddBlock_Always_AddsBlock(int existingBlockCount)
         {
             var testContext = new TestContext();
 
-            var mockExistingGasTanks = Enumerable.Repeat(0, existingGasTankCount)
+            var mockExistingBlocks = Enumerable.Repeat(0, existingBlockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
             
-            foreach(var mockExistingGasTank in mockExistingGasTanks)
-                testContext.Uut.AddGasTank(mockExistingGasTank.Object);
+            foreach(var mockExistingBlock in mockExistingBlocks)
+                testContext.Uut.AddBlock(mockExistingBlock.Object);
 
-            var mockGasTank = new Mock<IMyGasTank>();
+            var mockBlock = new Mock<IMyGasTank>();
 
-            testContext.Uut.AddGasTank(mockGasTank.Object);
+            testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.GasTanks.ShouldContain(mockGasTank.Object);
+            testContext.Uut.Blocks.ShouldContain(mockBlock.Object);
         }
 
-        #endregion AddGasTank() Tests
+        #endregion AddBlock() Tests
 
-        #region ClearGasTanks() Tests
+        #region ClearBlocks() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void ClearGasTanks_Always_ClearsGasTanks(int gasTankCount)
+        public void ClearBlocks_Always_ClearsBlocks(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockGasTanks = Enumerable.Repeat(0, gasTankCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
 
-            foreach (var mockGasTank in mockGasTanks)
-                testContext.Uut.AddGasTank(mockGasTank.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.ClearGasTanks();
+            testContext.Uut.ClearBlocks();
 
-            testContext.Uut.GasTanks.ShouldBeEmpty();
+            testContext.Uut.Blocks.ShouldBeEmpty();
         }
 
-        #endregion ClearGasTanks() Tests
+        #endregion ClearBlocks() Tests
 
-        #region MakeStockpileOperation() Tests
+        #region MakeOnDockingOperation() Tests
 
         [Test]
-        public void MakeStockpileOperation_GasTanksIsEmpty_CompletesImmediately()
+        public void MakeOnDockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeStockpileOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeStockpileOperation_GasTanksIsNotEmpty_StockpilesEachGasTank(int gasTankCount)
+        public void MakeOnDockingOperation_BlocksIsNotEmpty_StockpilesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockGasTanks = Enumerable.Repeat(0, gasTankCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
 
-            foreach (var mockGasTank in mockGasTanks)
-                testContext.Uut.AddGasTank(mockGasTank.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeStockpileOperation()
-                .ShouldRunToCompletionIn(gasTankCount);
+            testContext.Uut.MakeOnDockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockGasTanks.ForEach(mockGasTank =>
-                mockGasTank.ShouldHaveReceivedSet(x => x.Stockpile = true));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.Stockpile = true));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeStockpileOperation_OperationIsDisposed_RecyclesOperation(int gasTankCount)
+        public void MakeOnDockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockGasTanks = Enumerable.Repeat(0, gasTankCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
 
-            foreach (var mockGasTank in mockGasTanks)
-                testContext.Uut.AddGasTank(mockGasTank.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeStockpileOperation();
-            result.ShouldRunToCompletionIn(gasTankCount);
+            var result = testContext.Uut.MakeOnDockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockGasTankInvocations = mockGasTanks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockGasTanks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeStockpileOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(gasTankCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach(var i in Enumerable.Range(0, mockGasTanks.Length))
+            foreach(var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockGasTanks[i].Invocations.Count.ShouldBe(mockGasTankInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockGasTanks[i].Invocations.Count))
-                    mockGasTanks[i].Invocations[j].ShouldBe(mockGasTankInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeStockpileOperation() Tests
+        #endregion MakeOnDockingOperation() Tests
 
-        #region MakeDispenseOperation() Tests
+        #region MakeOnUndockingOperation() Tests
 
         [Test]
-        public void MakeDispenseOperation_GasTanksIsEmpty_CompletesImmediately()
+        public void MakeOnUndockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeDispenseOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDispenseOperation_GasTanksIsNotEmpty_DispensesEachGasTank(int gasTankCount)
+        public void MakeOnUndockingOperation_BlocksIsNotEmpty_DispensesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockGasTanks = Enumerable.Repeat(0, gasTankCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
 
-            foreach (var mockGasTank in mockGasTanks)
-                testContext.Uut.AddGasTank(mockGasTank.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeDispenseOperation()
-                .ShouldRunToCompletionIn(gasTankCount);
+            testContext.Uut.MakeOnUndockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockGasTanks.ForEach(mockGasTank =>
-                mockGasTank.ShouldHaveReceivedSet(x => x.Stockpile = false));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.Stockpile = false));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDispenseOperation_OperationIsDisposed_RecyclesOperation(int gasTankCount)
+        public void MakeOnUndockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockGasTanks = Enumerable.Repeat(0, gasTankCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyGasTank>())
                 .ToArray();
 
-            foreach (var mockGasTank in mockGasTanks)
-                testContext.Uut.AddGasTank(mockGasTank.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeDispenseOperation();
-            result.ShouldRunToCompletionIn(gasTankCount);
+            var result = testContext.Uut.MakeOnUndockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockGasTankInvocations = mockGasTanks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockGasTanks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeDispenseOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(gasTankCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach (var i in Enumerable.Range(0, mockGasTanks.Length))
+            foreach (var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockGasTanks[i].Invocations.Count.ShouldBe(mockGasTankInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockGasTanks[i].Invocations.Count))
-                    mockGasTanks[i].Invocations[j].ShouldBe(mockGasTankInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeDispenseOperation() Tests
+        #endregion MakeOnUndockingOperation() Tests
     }
 }

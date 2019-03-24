@@ -32,7 +32,7 @@ namespace AutomatedDockingProcedures.Test
             {
                 MockGasTankManager = new Mock<IGasTankManager>();
                 MockGasTankManager
-                    .Setup(x => x.GasTanks.Count)
+                    .Setup(x => x.Blocks.Count)
                     .Returns(() => GasTankCount);
 
                 MockLogger = new Mock<ILogger>();
@@ -84,7 +84,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.OnStarting();
 
             testContext.MockGasTankManager
-                .ShouldHaveReceived(x => x.ClearGasTanks());
+                .ShouldHaveReceived(x => x.ClearBlocks());
         }
 
         #endregion OnStarting() Tests
@@ -105,7 +105,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockGasTankManager
-                .ShouldNotHaveReceived(x => x.AddGasTank(It.IsAny<IMyGasTank>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyGasTank>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }
@@ -128,7 +128,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockGasTankManager
-                .ShouldHaveReceived(x => x.AddGasTank(mockBlock.Object));
+                .ShouldHaveReceived(x => x.AddBlock(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
         }
@@ -150,7 +150,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockGasTankManager
-                .ShouldNotHaveReceived(x => x.AddGasTank(It.IsAny<IMyGasTank>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyGasTank>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }

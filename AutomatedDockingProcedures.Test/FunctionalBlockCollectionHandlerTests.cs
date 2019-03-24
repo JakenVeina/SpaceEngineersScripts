@@ -136,7 +136,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.OnStarting();
 
             testContext.MockFunctionalBlockManager
-                .ShouldHaveReceived(x => x.ClearFunctionalBlocks());
+                .ShouldHaveReceived(x => x.ClearBlocks());
         }
 
         #endregion OnStarting() Tests
@@ -159,7 +159,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockFunctionalBlockManager
-                .ShouldNotHaveReceived(x => x.AddFunctionalBlock(It.IsAny<IMyFunctionalBlock>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyFunctionalBlock>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }
@@ -210,7 +210,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockFunctionalBlockManager
-                .ShouldHaveReceived(x => x.AddFunctionalBlock(mockBlock.Object as IMyFunctionalBlock));
+                .ShouldHaveReceived(x => x.AddBlock(mockBlock.Object as IMyFunctionalBlock));
 
             result.Result.IsSuccess.ShouldBeTrue();
         }
@@ -252,7 +252,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockFunctionalBlockManager
-                .ShouldNotHaveReceived(x => x.AddFunctionalBlock(It.IsAny<IMyFunctionalBlock>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyFunctionalBlock>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }

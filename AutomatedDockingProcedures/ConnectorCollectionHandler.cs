@@ -20,7 +20,7 @@ namespace IngameScript
             }
 
             public void OnStarting()
-                => _connectorManager.ClearConnectors();
+                => _connectorManager.ClearBlocks();
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
@@ -33,8 +33,8 @@ namespace IngameScript
 
             public void OnCompleted()
             {
-                if(_connectorManager.Connectors.Count > 0)
-                    _logger.AddLine($"Discovered {_connectorManager.Connectors.Count} connectors for management");
+                if(_connectorManager.Blocks.Count > 0)
+                    _logger.AddLine($"Discovered {_connectorManager.Blocks.Count} connectors for management");
             }
 
             private readonly IConnectorManager _connectorManager;
@@ -65,7 +65,7 @@ namespace IngameScript
                     var connector = Block as IMyShipConnector;
                     if (connector != null)
                     {
-                        _owner._connectorManager.AddConnector(connector);
+                        _owner._connectorManager.AddBlock(connector);
                         _result = BlockCollectionResult.Success;
                     }
 

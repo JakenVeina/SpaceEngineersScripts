@@ -32,7 +32,7 @@ namespace AutomatedDockingProcedures.Test
             {
                 MockBatteryBlockManager = new Mock<IBatteryBlockManager>();
                 MockBatteryBlockManager
-                    .Setup(x => x.BatteryBlocks.Count)
+                    .Setup(x => x.Blocks.Count)
                     .Returns(() => BatteryBlockCount);
 
                 MockLogger = new Mock<ILogger>();
@@ -84,7 +84,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.OnStarting();
 
             testContext.MockBatteryBlockManager
-                .ShouldHaveReceived(x => x.ClearBatteryBlocks());
+                .ShouldHaveReceived(x => x.ClearBlocks());
         }
 
         #endregion OnStarting() Tests
@@ -105,7 +105,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockBatteryBlockManager
-                .ShouldNotHaveReceived(x => x.AddBatteryBlock(It.IsAny<IMyBatteryBlock>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyBatteryBlock>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }
@@ -128,7 +128,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockBatteryBlockManager
-                .ShouldHaveReceived(x => x.AddBatteryBlock(mockBlock.Object));
+                .ShouldHaveReceived(x => x.AddBlock(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
         }
@@ -150,7 +150,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockBatteryBlockManager
-                .ShouldNotHaveReceived(x => x.AddBatteryBlock(It.IsAny<IMyBatteryBlock>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyBatteryBlock>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }

@@ -26,46 +26,46 @@ namespace AutomatedDockingProcedures.Test
 
                 MockBatteryBlockManager = new Mock<IBatteryBlockManager>();
                 MockBatteryBlockManager
-                    .Setup(x => x.MakeDischargeOperation())
-                    .Returns(() => MockDischargeBatteryBlocksOperation.Object);
+                    .Setup(x => x.MakeOnUndockingOperation())
+                    .Returns(() => MockBatteryBlocksOnUndockingOperation.Object);
                 MockBatteryBlockManager
-                    .Setup(x => x.MakeRechargeOperation())
-                    .Returns(() => MockRechargeBatteryBlocksOperation.Object);
+                    .Setup(x => x.MakeOnDockingOperation())
+                    .Returns(() => MockBatteryBlocksOnDockingOperation.Object);
 
                 MockConnectorManager = new Mock<IConnectorManager>();
                 MockConnectorManager
-                    .Setup(x => x.Connectors)
+                    .Setup(x => x.Blocks)
                     .Returns(() => _connectors);
                 MockConnectorManager
-                    .Setup(x => x.MakeConnectOperation())
-                    .Returns(() => MockConnectConnectorsOperation.Object);
+                    .Setup(x => x.MakeOnDockingOperation())
+                    .Returns(() => MockConnectorsOnDockingOperation.Object);
                 MockConnectorManager
-                    .Setup(x => x.MakeDisconnectOperation())
-                    .Returns(() => MockDisconnectConnectorsOperation.Object);
+                    .Setup(x => x.MakeOnUndockingOperation())
+                    .Returns(() => MockConnectorsOnUndockingOperation.Object);
 
                 MockFunctionalBlockManager = new Mock<IFunctionalBlockManager>();
                 MockFunctionalBlockManager
-                    .Setup(x => x.MakeEnableOperation())
-                    .Returns(() => MockEnableFunctionalBlocksOperation.Object);
+                    .Setup(x => x.MakeOnUndockingOperation())
+                    .Returns(() => MockFunctionalBlocksOnDockingOperation.Object);
                 MockFunctionalBlockManager
-                    .Setup(x => x.MakeDisableOperation())
-                    .Returns(() => MockDisableFunctionalBlocksOperation.Object);
+                    .Setup(x => x.MakeOnDockingOperation())
+                    .Returns(() => MockFunctionalBlocksOnUndockingOperation.Object);
 
                 MockGasTankManager = new Mock<IGasTankManager>();
                 MockGasTankManager
-                    .Setup(x => x.MakeStockpileOperation())
-                    .Returns(() => MockStockpileGasTanksOperation.Object);
+                    .Setup(x => x.MakeOnDockingOperation())
+                    .Returns(() => MockGasTanksOnDockingOperation.Object);
                 MockGasTankManager
-                    .Setup(x => x.MakeDispenseOperation())
-                    .Returns(() => MockDispenseGasTanksOperation.Object);
+                    .Setup(x => x.MakeOnUndockingOperation())
+                    .Returns(() => MockGasTanksOnUndockingOperation.Object);
 
                 MockLandingGearManager = new Mock<ILandingGearManager>();
                 MockLandingGearManager
-                    .Setup(x => x.MakeLockOperation())
-                    .Returns(() => MockLockLandingGearsOperation.Object);
+                    .Setup(x => x.MakeOnDockingOperation())
+                    .Returns(() => MockLandingGearsOnDockingOperation.Object);
                 MockLandingGearManager
-                    .Setup(x => x.MakeUnlockOperation())
-                    .Returns(() => MockUnlockLandingGearsOperation.Object);
+                    .Setup(x => x.MakeOnUndockingOperation())
+                    .Returns(() => MockLandingGearsOnUndockingOperation.Object);
 
                 Uut = new DockingManager(
                     MockLogger.Object,
@@ -80,25 +80,25 @@ namespace AutomatedDockingProcedures.Test
                 _mockConnectors = new List<Mock<IMyShipConnector>>();
                 _connectors = new List<IMyShipConnector>();
 
-                MockRechargeBatteryBlocksOperation = MakeFakeBackgroundOperation();
+                MockBatteryBlocksOnDockingOperation = MakeFakeBackgroundOperation();
 
-                MockDischargeBatteryBlocksOperation = MakeFakeBackgroundOperation();
+                MockBatteryBlocksOnUndockingOperation = MakeFakeBackgroundOperation();
 
-                MockConnectConnectorsOperation = MakeFakeBackgroundOperation();
+                MockConnectorsOnDockingOperation = MakeFakeBackgroundOperation();
 
-                MockDisconnectConnectorsOperation = MakeFakeBackgroundOperation();
+                MockConnectorsOnUndockingOperation = MakeFakeBackgroundOperation();
 
-                MockEnableFunctionalBlocksOperation = MakeFakeBackgroundOperation();
+                MockFunctionalBlocksOnDockingOperation = MakeFakeBackgroundOperation();
 
-                MockDisableFunctionalBlocksOperation = MakeFakeBackgroundOperation();
+                MockFunctionalBlocksOnUndockingOperation = MakeFakeBackgroundOperation();
 
-                MockStockpileGasTanksOperation = MakeFakeBackgroundOperation();
+                MockGasTanksOnDockingOperation = MakeFakeBackgroundOperation();
 
-                MockDispenseGasTanksOperation = MakeFakeBackgroundOperation();
+                MockGasTanksOnUndockingOperation = MakeFakeBackgroundOperation();
 
-                MockLockLandingGearsOperation = MakeFakeBackgroundOperation();
+                MockLandingGearsOnDockingOperation = MakeFakeBackgroundOperation();
 
-                MockUnlockLandingGearsOperation = MakeFakeBackgroundOperation();
+                MockLandingGearsOnUndockingOperation = MakeFakeBackgroundOperation();
             }
 
             public readonly DockingManager Uut;
@@ -122,25 +122,25 @@ namespace AutomatedDockingProcedures.Test
 
             public readonly FakeBackgroundWorker MockBackgroundWorker;
 
-            public readonly Mock<IBackgroundOperation> MockRechargeBatteryBlocksOperation;
+            public readonly Mock<IBackgroundOperation> MockBatteryBlocksOnDockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockDischargeBatteryBlocksOperation;
+            public readonly Mock<IBackgroundOperation> MockBatteryBlocksOnUndockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockConnectConnectorsOperation;
+            public readonly Mock<IBackgroundOperation> MockConnectorsOnDockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockDisconnectConnectorsOperation;
+            public readonly Mock<IBackgroundOperation> MockConnectorsOnUndockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockEnableFunctionalBlocksOperation;
+            public readonly Mock<IBackgroundOperation> MockFunctionalBlocksOnDockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockDisableFunctionalBlocksOperation;
+            public readonly Mock<IBackgroundOperation> MockFunctionalBlocksOnUndockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockStockpileGasTanksOperation;
+            public readonly Mock<IBackgroundOperation> MockGasTanksOnDockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockDispenseGasTanksOperation;
+            public readonly Mock<IBackgroundOperation> MockGasTanksOnUndockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockLockLandingGearsOperation;
+            public readonly Mock<IBackgroundOperation> MockLandingGearsOnDockingOperation;
 
-            public readonly Mock<IBackgroundOperation> MockUnlockLandingGearsOperation;
+            public readonly Mock<IBackgroundOperation> MockLandingGearsOnUndockingOperation;
 
             public void AddMockConnector(MyShipConnectorStatus status)
             {
@@ -189,9 +189,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
                 .Invocations.ShouldBeEmpty();
@@ -231,9 +231,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
                 .Invocations.ShouldBeEmpty();
@@ -269,9 +269,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
                 .Invocations.ShouldBeEmpty();
@@ -307,29 +307,29 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("complete"))));
 
             testContext.MockBatteryBlockManager
-                .ShouldHaveReceived(x => x.MakeRechargeOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
             testContext.MockBatteryBlockManager
-                .ShouldNotHaveReceived(x => x.MakeDischargeOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockConnectorManager
-                .ShouldHaveReceived(x => x.MakeConnectOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
-                .ShouldHaveReceived(x => x.MakeDisableOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
             testContext.MockFunctionalBlockManager
-                .ShouldNotHaveReceived(x => x.MakeEnableOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockGasTankManager
-                .ShouldHaveReceived(x => x.MakeStockpileOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
             testContext.MockGasTankManager
-                .ShouldNotHaveReceived(x => x.MakeDispenseOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockLandingGearManager
-                .ShouldHaveReceived(x => x.MakeLockOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
             testContext.MockLandingGearManager
-                .ShouldNotHaveReceived(x => x.MakeUnlockOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockBackgroundWorker
                 .MockSubOperationScheduler
@@ -340,11 +340,11 @@ namespace AutomatedDockingProcedures.Test
                 .Where(x => x.Method.Name == nameof(Action.Invoke))
                 .Select(x => x.Arguments[0])
                 .ShouldBe(Enumerable.Empty<object>()
-                    .Append(testContext.MockConnectConnectorsOperation.Object)
-                    .Append(testContext.MockLockLandingGearsOperation.Object)
-                    .Append(testContext.MockRechargeBatteryBlocksOperation.Object)
-                    .Append(testContext.MockStockpileGasTanksOperation.Object)
-                    .Append(testContext.MockDisableFunctionalBlocksOperation.Object));
+                    .Append(testContext.MockConnectorsOnDockingOperation.Object)
+                    .Append(testContext.MockLandingGearsOnDockingOperation.Object)
+                    .Append(testContext.MockBatteryBlocksOnDockingOperation.Object)
+                    .Append(testContext.MockGasTanksOnDockingOperation.Object)
+                    .Append(testContext.MockFunctionalBlocksOnUndockingOperation.Object));
         }
 
         #endregion MakeDockOperation() Tests
@@ -370,9 +370,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
                 .Invocations.ShouldBeEmpty();
@@ -419,9 +419,9 @@ namespace AutomatedDockingProcedures.Test
                 .Invocations.ShouldBeEmpty();
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeDisconnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
 
             testContext.MockFunctionalBlockManager
                 .Invocations.ShouldBeEmpty();
@@ -454,29 +454,29 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("complete"))));
 
             testContext.MockBatteryBlockManager
-                .ShouldHaveReceived(x => x.MakeDischargeOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
             testContext.MockBatteryBlockManager
-                .ShouldNotHaveReceived(x => x.MakeRechargeOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
 
             testContext.MockConnectorManager
-                .ShouldHaveReceived(x => x.MakeDisconnectOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.MakeConnectOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
 
             testContext.MockFunctionalBlockManager
-                .ShouldHaveReceived(x => x.MakeEnableOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
             testContext.MockFunctionalBlockManager
-                .ShouldNotHaveReceived(x => x.MakeDisableOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
 
             testContext.MockGasTankManager
-                .ShouldHaveReceived(x => x.MakeDispenseOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
             testContext.MockGasTankManager
-                .ShouldNotHaveReceived(x => x.MakeStockpileOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
 
             testContext.MockLandingGearManager
-                .ShouldHaveReceived(x => x.MakeUnlockOperation(), 1);
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
             testContext.MockLandingGearManager
-                .ShouldNotHaveReceived(x => x.MakeLockOperation());
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
 
             testContext.MockBackgroundWorker
                 .MockSubOperationScheduler
@@ -487,11 +487,11 @@ namespace AutomatedDockingProcedures.Test
                 .Where(x => x.Method.Name == nameof(Action.Invoke))
                 .Select(x => x.Arguments[0])
                 .ShouldBe(Enumerable.Empty<object>()
-                    .Append(testContext.MockEnableFunctionalBlocksOperation.Object)
-                    .Append(testContext.MockDispenseGasTanksOperation.Object)
-                    .Append(testContext.MockDischargeBatteryBlocksOperation.Object)
-                    .Append(testContext.MockUnlockLandingGearsOperation.Object)
-                    .Append(testContext.MockDisconnectConnectorsOperation.Object));
+                    .Append(testContext.MockFunctionalBlocksOnDockingOperation.Object)
+                    .Append(testContext.MockGasTanksOnUndockingOperation.Object)
+                    .Append(testContext.MockBatteryBlocksOnUndockingOperation.Object)
+                    .Append(testContext.MockLandingGearsOnUndockingOperation.Object)
+                    .Append(testContext.MockConnectorsOnUndockingOperation.Object));
         }
 
         #endregion MakeUndockOperation() Tests

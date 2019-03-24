@@ -26,33 +26,33 @@ namespace AutomatedDockingProcedures.Test
 
         #endregion Test Context
 
-        #region AddFunctionalBlock() Tests
+        #region AddBlock() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_Always_AddsFunctionalBlock(int existingFunctionalBlockCount)
+        public void AddBlock_Always_AddsBlock(int existingBlockCount)
         {
             var testContext = new TestContext();
 
-            var mockExistingFunctionalBlocks = Enumerable.Repeat(0, existingFunctionalBlockCount)
+            var mockExistingBlocks = Enumerable.Repeat(0, existingBlockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
             
-            foreach(var mockExistingFunctionalBlock in mockExistingFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockExistingFunctionalBlock.Object);
+            foreach(var mockExistingBlock in mockExistingBlocks)
+                testContext.Uut.AddBlock(mockExistingBlock.Object);
 
-            var mockFunctionalBlock = new Mock<IMyFunctionalBlock>();
+            var mockBlock = new Mock<IMyFunctionalBlock>();
 
-            testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.FunctionalBlocks.ShouldContain(mockFunctionalBlock.Object);
+            testContext.Uut.Blocks.ShouldContain(mockBlock.Object);
         }
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsBeacon_IncrementsBeaconCount(int mockExistingBeaconCount)
+        public void AddBlock_BlockIsBeacon_IncrementsBeaconCount(int mockExistingBeaconCount)
         {
             var testContext = new TestContext();
 
@@ -61,11 +61,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingBeacon in mockExistingBeacons)
-                testContext.Uut.AddFunctionalBlock(mockExistingBeacon.Object);
+                testContext.Uut.AddBlock(mockExistingBeacon.Object);
 
             var mockBeacon = new Mock<IMyBeacon>();
 
-            testContext.Uut.AddFunctionalBlock(mockBeacon.Object);
+            testContext.Uut.AddBlock(mockBeacon.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(mockExistingBeaconCount + 1);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -79,7 +79,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsGasGenerator_IncrementsGasGeneratorCount(int mockExistingGasGeneratorCount)
+        public void AddBlock_BlockIsGasGenerator_IncrementsGasGeneratorCount(int mockExistingGasGeneratorCount)
         {
             var testContext = new TestContext();
 
@@ -88,11 +88,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingGasGenerator in mockExistingGasGenerators)
-                testContext.Uut.AddFunctionalBlock(mockExistingGasGenerator.Object);
+                testContext.Uut.AddBlock(mockExistingGasGenerator.Object);
 
             var mockGasGenerator = new Mock<IMyGasGenerator>();
 
-            testContext.Uut.AddFunctionalBlock(mockGasGenerator.Object);
+            testContext.Uut.AddBlock(mockGasGenerator.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(mockExistingGasGeneratorCount + 1);
@@ -106,7 +106,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsGyro_IncrementsGyroCount(int mockExistingGyroCount)
+        public void AddBlock_BlockIsGyro_IncrementsGyroCount(int mockExistingGyroCount)
         {
             var testContext = new TestContext();
 
@@ -115,11 +115,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingGyro in mockExistingGyros)
-                testContext.Uut.AddFunctionalBlock(mockExistingGyro.Object);
+                testContext.Uut.AddBlock(mockExistingGyro.Object);
 
             var mockGyro = new Mock<IMyGyro>();
 
-            testContext.Uut.AddFunctionalBlock(mockGyro.Object);
+            testContext.Uut.AddBlock(mockGyro.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -133,7 +133,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsLightingBlock_IncrementsLightingBlockCount(int mockExistingLightingBlockCount)
+        public void AddBlock_BlockIsLightingBlock_IncrementsLightingBlockCount(int mockExistingLightingBlockCount)
         {
             var testContext = new TestContext();
 
@@ -142,11 +142,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingLightingBlock in mockExistingLightingBlocks)
-                testContext.Uut.AddFunctionalBlock(mockExistingLightingBlock.Object);
+                testContext.Uut.AddBlock(mockExistingLightingBlock.Object);
 
             var mockLightingBlock = new Mock<IMyLightingBlock>();
 
-            testContext.Uut.AddFunctionalBlock(mockLightingBlock.Object);
+            testContext.Uut.AddBlock(mockLightingBlock.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -160,7 +160,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsRadioAntenna_IncrementsRadioAntennaCount(int mockExistingRadioAntennaCount)
+        public void AddBlock_BlockIsRadioAntenna_IncrementsRadioAntennaCount(int mockExistingRadioAntennaCount)
         {
             var testContext = new TestContext();
 
@@ -169,11 +169,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingRadioAntenna in mockExistingRadioAntennas)
-                testContext.Uut.AddFunctionalBlock(mockExistingRadioAntenna.Object);
+                testContext.Uut.AddBlock(mockExistingRadioAntenna.Object);
 
             var mockRadioAntenna = new Mock<IMyRadioAntenna>();
 
-            testContext.Uut.AddFunctionalBlock(mockRadioAntenna.Object);
+            testContext.Uut.AddBlock(mockRadioAntenna.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -187,7 +187,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsReactor_IncrementsReactorCount(int mockExistingReactorCount)
+        public void AddBlock_BlockIsReactor_IncrementsReactorCount(int mockExistingReactorCount)
         {
             var testContext = new TestContext();
 
@@ -196,11 +196,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingReactor in mockExistingReactors)
-                testContext.Uut.AddFunctionalBlock(mockExistingReactor.Object);
+                testContext.Uut.AddBlock(mockExistingReactor.Object);
 
             var mockReactor = new Mock<IMyReactor>();
 
-            testContext.Uut.AddFunctionalBlock(mockReactor.Object);
+            testContext.Uut.AddBlock(mockReactor.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -214,7 +214,7 @@ namespace AutomatedDockingProcedures.Test
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddFunctionalBlock_BlockIsThruster_IncrementsThrusterCount(int mockExistingThrusterCount)
+        public void AddBlock_BlockIsThruster_IncrementsThrusterCount(int mockExistingThrusterCount)
         {
             var testContext = new TestContext();
 
@@ -223,11 +223,11 @@ namespace AutomatedDockingProcedures.Test
                 .ToArray();
 
             foreach (var mockExistingThruster in mockExistingThrusters)
-                testContext.Uut.AddFunctionalBlock(mockExistingThruster.Object);
+                testContext.Uut.AddBlock(mockExistingThruster.Object);
 
             var mockThruster = new Mock<IMyThrust>();
 
-            testContext.Uut.AddFunctionalBlock(mockThruster.Object);
+            testContext.Uut.AddBlock(mockThruster.Object);
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -238,43 +238,43 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.ThrusterCount.ShouldBe(mockExistingThrusterCount + 1);
         }
 
-        #endregion AddFunctionalBlock() Tests
+        #endregion AddBlock() Tests
 
-        #region ClearFunctionalBlocks() Tests
+        #region ClearBlocks() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void ClearFunctionalBlocks_Always_ClearsFunctionalBlocks(int functionalBlockCount)
+        public void ClearBlocks_Always_ClearsBlocks(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockFunctionalBlocks = Enumerable.Repeat(0, functionalBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
 
-            foreach (var mockFunctionalBlock in mockFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.ClearFunctionalBlocks();
+            testContext.Uut.ClearBlocks();
 
-            testContext.Uut.FunctionalBlocks.ShouldBeEmpty();
+            testContext.Uut.Blocks.ShouldBeEmpty();
         }
 
         [Test]
-        public void ClearFunctionalBlocks_Always_ClearsBlockCounts()
+        public void ClearBlocks_Always_ClearsBlockCounts()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyBeacon>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyGasGenerator>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyGyro>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyLightingBlock>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyRadioAntenna>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyReactor>().Object);
-            testContext.Uut.AddFunctionalBlock(new Mock<IMyThrust>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyBeacon>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyGasGenerator>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyGyro>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyLightingBlock>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyRadioAntenna>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyReactor>().Object);
+            testContext.Uut.AddBlock(new Mock<IMyThrust>().Object);
 
-            testContext.Uut.ClearFunctionalBlocks();
+            testContext.Uut.ClearBlocks();
 
             testContext.Uut.BeaconCount.ShouldBe(0);
             testContext.Uut.GasGeneratorCount.ShouldBe(0);
@@ -285,144 +285,144 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.ThrusterCount.ShouldBe(0);
         }
 
-        #endregion ClearFunctionalBlocks() Tests
+        #endregion ClearBlocks() Tests
 
-        #region MakeDisableOperation() Tests
+        #region MakeOnDockingOperation() Tests
 
         [Test]
-        public void MakeDisableOperation_FunctionalBlocksIsEmpty_CompletesImmediately()
+        public void MakeOnDockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeDisableOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDisableOperation_FunctionalBlocksIsNotEmpty_DisablesEachFunctionalBlock(int functionalBlockCount)
+        public void MakeOnDockingOperation_BlocksIsNotEmpty_DisablesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockFunctionalBlocks = Enumerable.Repeat(0, functionalBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
 
-            foreach (var mockFunctionalBlock in mockFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeDisableOperation()
-                .ShouldRunToCompletionIn(functionalBlockCount);
+            testContext.Uut.MakeOnDockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockFunctionalBlocks.ForEach(mockFunctionalBlock =>
-                mockFunctionalBlock.ShouldHaveReceivedSet(x => x.Enabled = false));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.Enabled = false));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDisableOperation_OperationIsDisposed_RecyclesOperation(int functionalBlockCount)
+        public void MakeOnDockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockFunctionalBlocks = Enumerable.Repeat(0, functionalBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
 
-            foreach (var mockFunctionalBlock in mockFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeDisableOperation();
-            result.ShouldRunToCompletionIn(functionalBlockCount);
+            var result = testContext.Uut.MakeOnDockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockFunctionalBlockInvocations = mockFunctionalBlocks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockFunctionalBlocks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeDisableOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(functionalBlockCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach(var i in Enumerable.Range(0, mockFunctionalBlocks.Length))
+            foreach(var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockFunctionalBlocks[i].Invocations.Count.ShouldBe(mockFunctionalBlockInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockFunctionalBlocks[i].Invocations.Count))
-                    mockFunctionalBlocks[i].Invocations[j].ShouldBe(mockFunctionalBlockInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeDisableOperation() Tests
+        #endregion MakeOnDockingOperation() Tests
 
-        #region MakeEnableOperation() Tests
+        #region MakeOnUndockingOperation() Tests
 
         [Test]
-        public void MakeEnableOperation_FunctionalBlocksIsEmpty_CompletesImmediately()
+        public void MakeOnUndockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeEnableOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeEnableOperation_FunctionalBlocksIsNotEmpty_EnablesEachFunctionalBlock(int functionalBlockCount)
+        public void MakeOnUndockingOperation_BlocksIsNotEmpty_EnablesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockFunctionalBlocks = Enumerable.Repeat(0, functionalBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
 
-            foreach (var mockFunctionalBlock in mockFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeEnableOperation()
-                .ShouldRunToCompletionIn(functionalBlockCount);
+            testContext.Uut.MakeOnUndockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockFunctionalBlocks.ForEach(mockFunctionalBlock =>
-                mockFunctionalBlock.ShouldHaveReceivedSet(x => x.Enabled = true));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.Enabled = true));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeEnableOperation_OperationIsDisposed_RecyclesOperation(int functionalBlockCount)
+        public void MakeOnUndockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockFunctionalBlocks = Enumerable.Repeat(0, functionalBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyFunctionalBlock>())
                 .ToArray();
 
-            foreach (var mockFunctionalBlock in mockFunctionalBlocks)
-                testContext.Uut.AddFunctionalBlock(mockFunctionalBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeEnableOperation();
-            result.ShouldRunToCompletionIn(functionalBlockCount);
+            var result = testContext.Uut.MakeOnUndockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockFunctionalBlockInvocations = mockFunctionalBlocks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockFunctionalBlocks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeEnableOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(functionalBlockCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach (var i in Enumerable.Range(0, mockFunctionalBlocks.Length))
+            foreach (var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockFunctionalBlocks[i].Invocations.Count.ShouldBe(mockFunctionalBlockInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockFunctionalBlocks[i].Invocations.Count))
-                    mockFunctionalBlocks[i].Invocations[j].ShouldBe(mockFunctionalBlockInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeEnableOperation() Tests
+        #endregion MakeOnUndockingOperation() Tests
     }
 }

@@ -114,16 +114,16 @@ namespace IngameScript
                 {
                     Owner._logger.AddLine("Attempting to Dock...");
 
-                    if (Owner._connectorManager.Connectors.Count == 0)
+                    if (Owner._connectorManager.Blocks.Count == 0)
                     {
                         Owner._logger.AddLine(" - Docking failed: No Connectors loaded");
                         return BackgroundOperationResult.Completed;
                     }
 
                     var anyConnectable = false;
-                    for (var i = 0; i < Owner._connectorManager.Connectors.Count; ++i)
+                    for (var i = 0; i < Owner._connectorManager.Blocks.Count; ++i)
                     {
-                        var status = Owner._connectorManager.Connectors[i].Status;
+                        var status = Owner._connectorManager.Blocks[i].Status;
 
                         if (status == MyShipConnectorStatus.Connected)
                         {
@@ -140,11 +140,11 @@ namespace IngameScript
                         return BackgroundOperationResult.Completed;
                     }
 
-                    subOperationScheduler.Invoke(Owner._connectorManager.MakeConnectOperation());
-                    subOperationScheduler.Invoke(Owner._landingGearManager.MakeLockOperation());
-                    subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeRechargeOperation());
-                    subOperationScheduler.Invoke(Owner._gasTankManager.MakeStockpileOperation());
-                    subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeDisableOperation());
+                    subOperationScheduler.Invoke(Owner._connectorManager.MakeOnDockingOperation());
+                    subOperationScheduler.Invoke(Owner._landingGearManager.MakeOnDockingOperation());
+                    subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeOnDockingOperation());
+                    subOperationScheduler.Invoke(Owner._gasTankManager.MakeOnDockingOperation());
+                    subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeOnDockingOperation());
 
                     return BackgroundOperationResult.NotCompleted;
                 }
@@ -162,15 +162,15 @@ namespace IngameScript
                 {
                     Owner._logger.AddLine("Executing Undocking Procedure...");
 
-                    if (Owner._connectorManager.Connectors.Count == 0)
+                    if (Owner._connectorManager.Blocks.Count == 0)
                     {
                         Owner._logger.AddLine(" - Undocking failed: No Connectors loaded");
                         return BackgroundOperationResult.Completed;
                     }
 
                     var anyConnected = false;
-                    for (var i = 0; i < Owner._connectorManager.Connectors.Count; ++i)
-                        anyConnected |= (Owner._connectorManager.Connectors[i].Status == MyShipConnectorStatus.Connected);
+                    for (var i = 0; i < Owner._connectorManager.Blocks.Count; ++i)
+                        anyConnected |= (Owner._connectorManager.Blocks[i].Status == MyShipConnectorStatus.Connected);
 
                     if (!anyConnected)
                     {
@@ -178,11 +178,11 @@ namespace IngameScript
                         return BackgroundOperationResult.Completed;
                     }
 
-                    subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeEnableOperation());
-                    subOperationScheduler.Invoke(Owner._gasTankManager.MakeDispenseOperation());
-                    subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeDischargeOperation());
-                    subOperationScheduler.Invoke(Owner._landingGearManager.MakeUnlockOperation());
-                    subOperationScheduler.Invoke(Owner._connectorManager.MakeDisconnectOperation());
+                    subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeOnUndockingOperation());
+                    subOperationScheduler.Invoke(Owner._gasTankManager.MakeOnUndockingOperation());
+                    subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeOnUndockingOperation());
+                    subOperationScheduler.Invoke(Owner._landingGearManager.MakeOnUndockingOperation());
+                    subOperationScheduler.Invoke(Owner._connectorManager.MakeOnUndockingOperation());
 
                     return BackgroundOperationResult.NotCompleted;
                 }

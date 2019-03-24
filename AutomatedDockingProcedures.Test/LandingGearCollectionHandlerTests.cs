@@ -33,7 +33,7 @@ namespace AutomatedDockingProcedures.Test
             {
                 MockLandingGearManager = new Mock<ILandingGearManager>();
                 MockLandingGearManager
-                    .Setup(x => x.LandingGears.Count)
+                    .Setup(x => x.Blocks.Count)
                     .Returns(() => LandingGearCount);
 
                 MockLogger = new Mock<ILogger>();
@@ -85,7 +85,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.OnStarting();
 
             testContext.MockLandingGearManager
-                .ShouldHaveReceived(x => x.ClearLandingGears());
+                .ShouldHaveReceived(x => x.ClearBlocks());
         }
 
         #endregion OnStarting() Tests
@@ -106,7 +106,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockLandingGearManager
-                .ShouldNotHaveReceived(x => x.AddLandingGear(It.IsAny<IMyLandingGear>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyLandingGear>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }
@@ -129,7 +129,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockLandingGearManager
-                .ShouldHaveReceived(x => x.AddLandingGear(mockBlock.Object));
+                .ShouldHaveReceived(x => x.AddBlock(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
         }
@@ -151,7 +151,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockLandingGearManager
-                .ShouldNotHaveReceived(x => x.AddLandingGear(It.IsAny<IMyLandingGear>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyLandingGear>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }

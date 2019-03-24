@@ -22,7 +22,7 @@ namespace IngameScript
             }
 
             public void OnStarting()
-                => _gasTankManager.ClearGasTanks();
+                => _gasTankManager.ClearBlocks();
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
@@ -35,8 +35,8 @@ namespace IngameScript
 
             public void OnCompleted()
             {
-                if(_gasTankManager.GasTanks.Count > 0)
-                    _logger.AddLine($"Discovered {_gasTankManager.GasTanks.Count} gas tanks for management");
+                if(_gasTankManager.Blocks.Count > 0)
+                    _logger.AddLine($"Discovered {_gasTankManager.Blocks.Count} gas tanks for management");
             }
 
             private readonly IGasTankManager _gasTankManager;
@@ -71,7 +71,7 @@ namespace IngameScript
                         var gasTank = Block as IMyGasTank;
                         if (gasTank != null)
                         {
-                            _owner._gasTankManager.AddGasTank(gasTank);
+                            _owner._gasTankManager.AddBlock(gasTank);
                             _result = BlockCollectionResult.Success;
                         }
                     }

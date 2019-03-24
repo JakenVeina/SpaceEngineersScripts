@@ -3,6 +3,7 @@
 using Moq;
 using NUnit.Framework;
 using Shouldly;
+
 using static IngameScript.Program;
 
 using Sandbox.ModAPI.Ingame;
@@ -26,190 +27,190 @@ namespace AutomatedDockingProcedures.Test
 
         #endregion Test Context
 
-        #region AddBatteryBlock() Tests
+        #region AddBlock() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddBatteryBlock_Always_AddsBatteryBlock(int existingBatteryBlockCount)
+        public void AddBlock_Always_AddsBlock(int existingBlockCount)
         {
             var testContext = new TestContext();
 
-            var mockExistingBatteryBlocks = Enumerable.Repeat(0, existingBatteryBlockCount)
+            var mockExistingBlocks = Enumerable.Repeat(0, existingBlockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
             
-            foreach(var mockExistingBatteryBlock in mockExistingBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockExistingBatteryBlock.Object);
+            foreach(var mockExistingBlock in mockExistingBlocks)
+                testContext.Uut.AddBlock(mockExistingBlock.Object);
 
-            var mockBatteryBlock = new Mock<IMyBatteryBlock>();
+            var mockBlock = new Mock<IMyBatteryBlock>();
 
-            testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.BatteryBlocks.ShouldContain(mockBatteryBlock.Object);
+            testContext.Uut.Blocks.ShouldContain(mockBlock.Object);
         }
 
-        #endregion AddBatteryBlock() Tests
+        #endregion AddBlock() Tests
 
-        #region ClearBatteryBlocks() Tests
+        #region ClearBlocks() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void ClearBatteryBlocks_Always_ClearsBatteryBlocks(int batteryBlockCount)
+        public void ClearBlocks_Always_ClearsBlocks(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockBatteryBlocks = Enumerable.Repeat(0, batteryBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
 
-            foreach (var mockBatteryBlock in mockBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.ClearBatteryBlocks();
+            testContext.Uut.ClearBlocks();
 
-            testContext.Uut.BatteryBlocks.ShouldBeEmpty();
+            testContext.Uut.Blocks.ShouldBeEmpty();
         }
 
-        #endregion ClearBatteryBlocks() Tests
+        #endregion ClearBlocks() Tests
 
-        #region MakeRechargeOperation() Tests
+        #region MakeOnDockingOperation() Tests
 
         [Test]
-        public void MakeRechargeOperation_BatteryBlocksIsEmpty_CompletesImmediately()
+        public void MakeOnDockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeRechargeOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeRechargeOperation_BatteryBlocksIsNotEmpty_RechargesEachBatteryBlock(int batteryBlockCount)
+        public void MakeOnDockingOperation_BlocksIsNotEmpty_RechargesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockBatteryBlocks = Enumerable.Repeat(0, batteryBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
 
-            foreach (var mockBatteryBlock in mockBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeRechargeOperation()
-                .ShouldRunToCompletionIn(batteryBlockCount);
+            testContext.Uut.MakeOnDockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockBatteryBlocks.ForEach(mockBatteryBlock =>
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Recharge));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Recharge));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeRechargeOperation_OperationIsDisposed_RecyclesOperation(int batteryBlockCount)
+        public void MakeOnDockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockBatteryBlocks = Enumerable.Repeat(0, batteryBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
 
-            foreach (var mockBatteryBlock in mockBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeRechargeOperation();
-            result.ShouldRunToCompletionIn(batteryBlockCount);
+            var result = testContext.Uut.MakeOnDockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockBatteryBlockInvocations = mockBatteryBlocks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockBatteryBlocks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeRechargeOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(batteryBlockCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach(var i in Enumerable.Range(0, mockBatteryBlocks.Length))
+            foreach(var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockBatteryBlocks[i].Invocations.Count.ShouldBe(mockBatteryBlockInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockBatteryBlocks[i].Invocations.Count))
-                    mockBatteryBlocks[i].Invocations[j].ShouldBe(mockBatteryBlockInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeRechargeOperation() Tests
+        #endregion MakeOnDockingOperation() Tests
 
-        #region MakeDischargeOperation() Tests
+        #region MakeOnUndockingOperation() Tests
 
         [Test]
-        public void MakeDischargeOperation_BatteryBlocksIsEmpty_CompletesImmediately()
+        public void MakeOnUndockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeDischargeOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDischargeOperation_BatteryBlocksIsNotEmpty_DischargesEachBatteryBlock(int batteryBlockCount)
+        public void MakeOnUndockingOperation_BlocksIsNotEmpty_DischargesEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockBatteryBlocks = Enumerable.Repeat(0, batteryBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
 
-            foreach (var mockBatteryBlock in mockBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeDischargeOperation()
-                .ShouldRunToCompletionIn(batteryBlockCount);
+            testContext.Uut.MakeOnUndockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockBatteryBlocks.ForEach(mockBatteryBlock =>
-                mockBatteryBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Discharge));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceivedSet(x => x.ChargeMode = ChargeMode.Discharge));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDischargeOperation_OperationIsDisposed_RecyclesOperation(int batteryBlockCount)
+        public void MakeOnUndockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockBatteryBlocks = Enumerable.Repeat(0, batteryBlockCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyBatteryBlock>())
                 .ToArray();
 
-            foreach (var mockBatteryBlock in mockBatteryBlocks)
-                testContext.Uut.AddBatteryBlock(mockBatteryBlock.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeDischargeOperation();
-            result.ShouldRunToCompletionIn(batteryBlockCount);
+            var result = testContext.Uut.MakeOnUndockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockBatteryBlockInvocations = mockBatteryBlocks
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockBatteryBlocks.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeDischargeOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(batteryBlockCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach (var i in Enumerable.Range(0, mockBatteryBlocks.Length))
+            foreach (var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockBatteryBlocks[i].Invocations.Count.ShouldBe(mockBatteryBlockInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockBatteryBlocks[i].Invocations.Count))
-                    mockBatteryBlocks[i].Invocations[j].ShouldBe(mockBatteryBlockInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeDischargeOperation() Tests
+        #endregion MakeOnUndockingOperation() Tests
     }
 }

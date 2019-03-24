@@ -23,7 +23,7 @@ namespace IngameScript
             }
 
             public void OnStarting()
-                => _landingGearManager.ClearLandingGears();
+                => _landingGearManager.ClearBlocks();
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
@@ -36,8 +36,8 @@ namespace IngameScript
 
             public void OnCompleted()
             {
-                if(_landingGearManager.LandingGears.Count > 0)
-                    _logger.AddLine($"Discovered {_landingGearManager.LandingGears.Count} landing gears for management");
+                if(_landingGearManager.Blocks.Count > 0)
+                    _logger.AddLine($"Discovered {_landingGearManager.Blocks.Count} landing gears for management");
             }
 
             private readonly ILandingGearManager _landingGearManager;
@@ -72,7 +72,7 @@ namespace IngameScript
                         var landingGear = Block as IMyLandingGear;
                         if (landingGear != null)
                         {
-                            _owner._landingGearManager.AddLandingGear(landingGear);
+                            _owner._landingGearManager.AddBlock(landingGear);
                             _result = BlockCollectionResult.Success;
                         }
                     }

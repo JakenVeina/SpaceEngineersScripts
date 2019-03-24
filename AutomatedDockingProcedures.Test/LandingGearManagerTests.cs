@@ -3,6 +3,7 @@
 using Moq;
 using NUnit.Framework;
 using Shouldly;
+
 using static IngameScript.Program;
 
 using SpaceEngineers.Game.ModAPI.Ingame;
@@ -26,190 +27,190 @@ namespace AutomatedDockingProcedures.Test
 
         #endregion Test Context
 
-        #region AddLandingGear() Tests
+        #region AddBlock() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddLandingGear_Always_AddsLandingGear(int existingLandingGearCount)
+        public void AddBlock_Always_AddsBlock(int existingBlockCount)
         {
             var testContext = new TestContext();
 
-            var mockExistingLandingGears = Enumerable.Repeat(0, existingLandingGearCount)
+            var mockExistingBlocks = Enumerable.Repeat(0, existingBlockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
             
-            foreach(var mockExistingLandingGear in mockExistingLandingGears)
-                testContext.Uut.AddLandingGear(mockExistingLandingGear.Object);
+            foreach(var mockExistingBlock in mockExistingBlocks)
+                testContext.Uut.AddBlock(mockExistingBlock.Object);
 
-            var mockLandingGear = new Mock<IMyLandingGear>();
+            var mockBlock = new Mock<IMyLandingGear>();
 
-            testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.LandingGears.ShouldContain(mockLandingGear.Object);
+            testContext.Uut.Blocks.ShouldContain(mockBlock.Object);
         }
 
-        #endregion AddLandingGear() Tests
+        #endregion AddBlock() Tests
 
-        #region ClearLandingGears() Tests
+        #region ClearBlocks() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void ClearLandingGears_Always_ClearsLandingGears(int landingGearCount)
+        public void ClearBlocks_Always_ClearsBlocks(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockLandingGears = Enumerable.Repeat(0, landingGearCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
 
-            foreach (var mockLandingGear in mockLandingGears)
-                testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.ClearLandingGears();
+            testContext.Uut.ClearBlocks();
 
-            testContext.Uut.LandingGears.ShouldBeEmpty();
+            testContext.Uut.Blocks.ShouldBeEmpty();
         }
 
-        #endregion ClearLandingGears() Tests
+        #endregion ClearBlocks() Tests
 
-        #region MakeLockOperation() Tests
+        #region MakeOnDockingOperation() Tests
 
         [Test]
-        public void MakeLockOperation_LandingGearsIsEmpty_CompletesImmediately()
+        public void MakeOnDockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeLockOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeLockOperation_LandingGearsIsNotEmpty_LocksEachLandingGear(int landingGearCount)
+        public void MakeOnDockingOperation_BlocksIsNotEmpty_LocksEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockLandingGears = Enumerable.Repeat(0, landingGearCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
 
-            foreach (var mockLandingGear in mockLandingGears)
-                testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeLockOperation()
-                .ShouldRunToCompletionIn(landingGearCount);
+            testContext.Uut.MakeOnDockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockLandingGears.ForEach(mockLandingGear =>
-                mockLandingGear.ShouldHaveReceived(x => x.Lock()));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceived(x => x.Lock()));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeLockOperation_OperationIsDisposed_RecyclesOperation(int landingGearCount)
+        public void MakeOnDockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockLandingGears = Enumerable.Repeat(0, landingGearCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
 
-            foreach (var mockLandingGear in mockLandingGears)
-                testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeLockOperation();
-            result.ShouldRunToCompletionIn(landingGearCount);
+            var result = testContext.Uut.MakeOnDockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockLandingGearInvocations = mockLandingGears
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockLandingGears.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeLockOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(landingGearCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach(var i in Enumerable.Range(0, mockLandingGears.Length))
+            foreach(var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockLandingGears[i].Invocations.Count.ShouldBe(mockLandingGearInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockLandingGears[i].Invocations.Count))
-                    mockLandingGears[i].Invocations[j].ShouldBe(mockLandingGearInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeLockOperation() Tests
+        #endregion MakeOnDockingOperation() Tests
 
-        #region MakeUnlockOperation() Tests
+        #region MakeOnUndockingOperation() Tests
 
         [Test]
-        public void MakeUnlockOperation_LandingGearsIsEmpty_CompletesImmediately()
+        public void MakeOnUndockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeUnlockOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeUnlockOperation_LandingGearsIsNotEmpty_UnlocksEachLandingGear(int landingGearCount)
+        public void MakeOnUndockingOperation_BlocksIsNotEmpty_UnlocksEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockLandingGears = Enumerable.Repeat(0, landingGearCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
 
-            foreach (var mockLandingGear in mockLandingGears)
-                testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeUnlockOperation()
-                .ShouldRunToCompletionIn(landingGearCount);
+            testContext.Uut.MakeOnUndockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockLandingGears.ForEach(mockLandingGear =>
-                mockLandingGear.ShouldHaveReceived(x => x.Unlock()));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceived(x => x.Unlock()));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeUnlockOperation_OperationIsDisposed_RecyclesOperation(int landingGearCount)
+        public void MakeOnUndockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockLandingGears = Enumerable.Repeat(0, landingGearCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyLandingGear>())
                 .ToArray();
 
-            foreach (var mockLandingGear in mockLandingGears)
-                testContext.Uut.AddLandingGear(mockLandingGear.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeUnlockOperation();
-            result.ShouldRunToCompletionIn(landingGearCount);
+            var result = testContext.Uut.MakeOnUndockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockLandingGearInvocations = mockLandingGears
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockLandingGears.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeUnlockOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(landingGearCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach (var i in Enumerable.Range(0, mockLandingGears.Length))
+            foreach (var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockLandingGears[i].Invocations.Count.ShouldBe(mockLandingGearInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockLandingGears[i].Invocations.Count))
-                    mockLandingGears[i].Invocations[j].ShouldBe(mockLandingGearInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeUnlockOperation() Tests
+        #endregion MakeOnUndockingOperation() Tests
     }
 }

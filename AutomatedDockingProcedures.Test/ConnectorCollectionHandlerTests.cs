@@ -26,7 +26,7 @@ namespace AutomatedDockingProcedures.Test
             {
                 MockConnectorManager = new Mock<IConnectorManager>();
                 MockConnectorManager
-                    .Setup(x => x.Connectors.Count)
+                    .Setup(x => x.Blocks.Count)
                     .Returns(() => ConnectorCount);
 
                 MockLogger = new Mock<ILogger>();
@@ -59,7 +59,7 @@ namespace AutomatedDockingProcedures.Test
             testContext.Uut.OnStarting();
 
             testContext.MockConnectorManager
-                .ShouldHaveReceived(x => x.ClearConnectors());
+                .ShouldHaveReceived(x => x.ClearBlocks());
         }
 
         #endregion OnStarting() Tests
@@ -80,7 +80,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockConnectorManager
-                .ShouldNotHaveReceived(x => x.AddConnector(It.IsAny<IMyShipConnector>()));
+                .ShouldNotHaveReceived(x => x.AddBlock(It.IsAny<IMyShipConnector>()));
 
             result.Result.IsIgnored.ShouldBeTrue();
         }
@@ -99,7 +99,7 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
 
             testContext.MockConnectorManager
-                .ShouldHaveReceived(x => x.AddConnector(mockBlock.Object));
+                .ShouldHaveReceived(x => x.AddBlock(mockBlock.Object));
 
             result.Result.IsSuccess.ShouldBeTrue();
         }

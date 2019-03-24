@@ -22,7 +22,7 @@ namespace IngameScript
             }
 
             public void OnStarting()
-                => _functionalBlockManager.ClearFunctionalBlocks();
+                => _functionalBlockManager.ClearBlocks();
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
@@ -83,7 +83,7 @@ namespace IngameScript
                         var gyro = Block as IMyGyro;
                         if (gyro != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(gyro);
+                            _owner._functionalBlockManager.AddBlock(gyro);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -94,7 +94,7 @@ namespace IngameScript
                         var lightingBlock = Block as IMyLightingBlock;
                         if (lightingBlock != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(lightingBlock);
+                            _owner._functionalBlockManager.AddBlock(lightingBlock);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -105,7 +105,7 @@ namespace IngameScript
                         var beacon = Block as IMyBeacon;
                         if (beacon != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(beacon);
+                            _owner._functionalBlockManager.AddBlock(beacon);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -116,7 +116,7 @@ namespace IngameScript
                         var antenna = Block as IMyRadioAntenna;
                         if (antenna != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(antenna);
+                            _owner._functionalBlockManager.AddBlock(antenna);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -127,7 +127,7 @@ namespace IngameScript
                         var gasGenerator = Block as IMyGasGenerator;
                         if (gasGenerator != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(gasGenerator);
+                            _owner._functionalBlockManager.AddBlock(gasGenerator);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -138,7 +138,7 @@ namespace IngameScript
                         var reactor = Block as IMyReactor;
                         if (reactor != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(reactor);
+                            _owner._functionalBlockManager.AddBlock(reactor);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }
@@ -149,7 +149,7 @@ namespace IngameScript
                         var thruster = Block as IMyThrust;
                         if (thruster != null)
                         {
-                            _owner._functionalBlockManager.AddFunctionalBlock(thruster);
+                            _owner._functionalBlockManager.AddBlock(thruster);
                             _result = BlockCollectionResult.Success;
                             return BackgroundOperationResult.Completed;
                         }

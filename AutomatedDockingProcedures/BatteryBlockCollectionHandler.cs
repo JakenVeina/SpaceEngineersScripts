@@ -22,7 +22,7 @@ namespace IngameScript
             }
 
             public void OnStarting()
-                => _batteryBlockManager.ClearBatteryBlocks();
+                => _batteryBlockManager.ClearBlocks();
 
             public IBackgroundOperation<BlockCollectionResult> MakeCollectBlockOperation(IMyTerminalBlock block)
             {
@@ -35,8 +35,8 @@ namespace IngameScript
 
             public void OnCompleted()
             {
-                if(_batteryBlockManager.BatteryBlocks.Count > 0)
-                    _logger.AddLine($"Discovered {_batteryBlockManager.BatteryBlocks.Count} batteries for management");
+                if(_batteryBlockManager.Blocks.Count > 0)
+                    _logger.AddLine($"Discovered {_batteryBlockManager.Blocks.Count} batteries for management");
             }
 
             private readonly IBatteryBlockManager _batteryBlockManager;
@@ -71,7 +71,7 @@ namespace IngameScript
                         var batteryBlock = Block as IMyBatteryBlock;
                         if (batteryBlock != null)
                         {
-                            _owner._batteryBlockManager.AddBatteryBlock(batteryBlock);
+                            _owner._batteryBlockManager.AddBlock(batteryBlock);
                             _result = BlockCollectionResult.Success;
                         }
                     }

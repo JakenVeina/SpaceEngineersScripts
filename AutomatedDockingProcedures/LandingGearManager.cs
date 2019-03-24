@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using SpaceEngineers.Game.ModAPI.Ingame;
 
@@ -7,105 +6,28 @@ namespace IngameScript
 {
     partial class Program
     {
-        public interface ILandingGearManager
+        public interface ILandingGearManager : IBlockManager<IMyLandingGear> { }
+
+        public sealed class LandingGearManager : BlockManagerBase<IMyLandingGear>, ILandingGearManager
         {
-            IReadOnlyList<IMyLandingGear> LandingGears { get; }
+            internal protected override OnDockOperationBase CreateOnDockingOperation(BlockManagerBase<IMyLandingGear> owner, Action onDisposed)
+                => new LockOperation(owner, onDisposed);
 
-            void AddLandingGear(IMyLandingGear landingGear);
+            internal protected override OnDockOperationBase CreateOnUndockingOperation(BlockManagerBase<IMyLandingGear> owner, Action onDisposed)
+                => new UnlockOperation(owner, onDisposed);
 
-            void ClearLandingGears();
-
-            IBackgroundOperation MakeLockOperation();
-
-            IBackgroundOperation MakeUnlockOperation();
-        }
-
-        public class LandingGearManager : ILandingGearManager
-        {
-            public LandingGearManager()
+            private sealed class LockOperation : OnDockOperationBase
             {
-                _lockOperationPool = new ObjectPool<LockOperation>(onFinished
-                    => new LockOperation(this, onFinished));
-
-                _unlockOperationPool = new ObjectPool<UnlockOperation>(onFinished
-                    => new UnlockOperation(this, onFinished));
-            }
-
-            public IReadOnlyList<IMyLandingGear> LandingGears
-                => _landingGears;
-
-            public void AddLandingGear(IMyLandingGear landingGear)
-                => _landingGears.Add(landingGear);
-
-            public void ClearLandingGears()
-                => _landingGears.Clear();
-
-            public IBackgroundOperation MakeLockOperation()
-                => _lockOperationPool.Get();
-
-            public IBackgroundOperation MakeUnlockOperation()
-                => _unlockOperationPool.Get();
-
-            private readonly List<IMyLandingGear> _landingGears
-                = new List<IMyLandingGear>();
-
-            private readonly ObjectPool<LockOperation> _lockOperationPool;
-
-            private readonly ObjectPool<UnlockOperation> _unlockOperationPool;
-
-            private abstract class LandingGearOperationBase : IBackgroundOperation, IDisposable
-            {
-                public LandingGearOperationBase(LandingGearManager owner, Action onDisposed)
-                {
-                    _owner = owner;
-                    _onDisposed = onDisposed;
-
-                    Reset();
-                }
-
-                public BackgroundOperationResult Execute(Action<IBackgroundOperation> subOperationScheduler)
-                {
-                    if (_owner._landingGears.Count == 0)
-                        return BackgroundOperationResult.Completed;
-
-                    OnExecuting(_owner._landingGears[_landingGearIndex]);
-
-                    if (++_landingGearIndex < _owner._landingGears.Count)
-                        return BackgroundOperationResult.NotCompleted;
-
-                    return BackgroundOperationResult.Completed;
-                }
-
-                public void Dispose()
-                {
-                    Reset();
-                    _onDisposed.Invoke();
-                }
-
-                protected abstract void OnExecuting(IMyLandingGear landingGear);
-
-                private void Reset()
-                    => _landingGearIndex = 0;
-
-                private readonly LandingGearManager _owner;
-
-                private readonly Action _onDisposed;
-
-                private int _landingGearIndex;
-            }
-
-            private sealed class LockOperation : LandingGearOperationBase
-            {
-                public LockOperation(LandingGearManager owner, Action onDisposed)
+                public LockOperation(BlockManagerBase<IMyLandingGear> owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyLandingGear landingGear)
                     => landingGear.Lock();
             }
 
-            private sealed class UnlockOperation : LandingGearOperationBase
+            private sealed class UnlockOperation : OnDockOperationBase
             {
-                public UnlockOperation(LandingGearManager owner, Action onDisposed)
+                public UnlockOperation(BlockManagerBase<IMyLandingGear> owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyLandingGear landingGear)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Sandbox.ModAPI.Ingame;
 
@@ -7,10 +6,8 @@ namespace IngameScript
 {
     partial class Program
     {
-        public interface IFunctionalBlockManager
+        public interface IFunctionalBlockManager : IBlockManager<IMyFunctionalBlock>
         {
-            IReadOnlyList<IMyFunctionalBlock> FunctionalBlocks { get; }
-
             int BeaconCount { get; }
 
             int GasGeneratorCount { get; }
@@ -24,30 +21,10 @@ namespace IngameScript
             int ReactorCount { get; }
 
             int ThrusterCount { get; }
-
-            void AddFunctionalBlock(IMyFunctionalBlock functionalBlock);
-
-            void ClearFunctionalBlocks();
-
-            IBackgroundOperation MakeDisableOperation();
-
-            IBackgroundOperation MakeEnableOperation();
         }
 
-        public class FunctionalBlockManager : IFunctionalBlockManager
+        public sealed class FunctionalBlockManager : BlockManagerBase<IMyFunctionalBlock>, IFunctionalBlockManager
         {
-            public FunctionalBlockManager()
-            {
-                _disableOperationPool = new ObjectPool<DisableOperation>(onFinished
-                    => new DisableOperation(this, onFinished));
-
-                _enableOperationPool = new ObjectPool<EnableOperation>(onFinished
-                    => new EnableOperation(this, onFinished));
-            }
-
-            public IReadOnlyList<IMyFunctionalBlock> FunctionalBlocks
-                => _functionalBlocks;
-
             public int BeaconCount
                 => _beaconCount;
 
@@ -69,29 +46,29 @@ namespace IngameScript
             public int ThrusterCount
                 => _thrusterCount;
 
-            public void AddFunctionalBlock(IMyFunctionalBlock functionalBlock)
+            public override void AddBlock(IMyFunctionalBlock block)
             {
-                _functionalBlocks.Add(functionalBlock);
+                base.AddBlock(block);
 
-                if (functionalBlock is IMyBeacon)
+                if (block is IMyBeacon)
                     ++_beaconCount;
-                else if (functionalBlock is IMyGasGenerator)
+                else if (block is IMyGasGenerator)
                     ++_gasGeneratorCount;
-                else if (functionalBlock is IMyGyro)
+                else if (block is IMyGyro)
                     ++_gyroCount;
-                else if (functionalBlock is IMyLightingBlock)
+                else if (block is IMyLightingBlock)
                     ++_lightingBlockCount;
-                else if (functionalBlock is IMyRadioAntenna)
+                else if (block is IMyRadioAntenna)
                     ++_radioAntennaCount;
-                else if (functionalBlock is IMyReactor)
+                else if (block is IMyReactor)
                     ++_reactorCount;
-                else if (functionalBlock is IMyThrust)
+                else if (block is IMyThrust)
                     ++_thrusterCount;
             }
 
-            public void ClearFunctionalBlocks()
+            public override void ClearBlocks()
             {
-                _functionalBlocks.Clear();
+                base.ClearBlocks();
 
                 _beaconCount = 0;
                 _gasGeneratorCount = 0;
@@ -102,18 +79,11 @@ namespace IngameScript
                 _thrusterCount = 0;
             }
 
-            public IBackgroundOperation MakeDisableOperation()
-                => _disableOperationPool.Get();
+            internal protected override OnDockOperationBase CreateOnDockingOperation(BlockManagerBase<IMyFunctionalBlock> owner, Action onDisposed)
+                => new DisableOperation(owner, onDisposed);
 
-            public IBackgroundOperation MakeEnableOperation()
-                => _enableOperationPool.Get();
-
-            private readonly List<IMyFunctionalBlock> _functionalBlocks
-                = new List<IMyFunctionalBlock>();
-
-            private readonly ObjectPool<DisableOperation> _disableOperationPool;
-
-            private readonly ObjectPool<EnableOperation> _enableOperationPool;
+            internal protected override OnDockOperationBase CreateOnUndockingOperation(BlockManagerBase<IMyFunctionalBlock> owner, Action onDisposed)
+                => new EnableOperation(owner, onDisposed);
 
             private int _beaconCount;
 
@@ -129,59 +99,18 @@ namespace IngameScript
 
             private int _thrusterCount;
 
-            private abstract class FunctionalBlockOperationBase : IBackgroundOperation, IDisposable
+            private sealed class DisableOperation : OnDockOperationBase
             {
-                public FunctionalBlockOperationBase(FunctionalBlockManager owner, Action onDisposed)
-                {
-                    _owner = owner;
-                    _onDisposed = onDisposed;
-
-                    Reset();
-                }
-
-                public BackgroundOperationResult Execute(Action<IBackgroundOperation> subOperationScheduler)
-                {
-                    if (_owner._functionalBlocks.Count == 0)
-                        return BackgroundOperationResult.Completed;
-
-                    OnExecuting(_owner._functionalBlocks[_functionalBlockIndex]);
-
-                    if (++_functionalBlockIndex < _owner._functionalBlocks.Count)
-                        return BackgroundOperationResult.NotCompleted;
-
-                    return BackgroundOperationResult.Completed;
-                }
-
-                public void Dispose()
-                {
-                    Reset();
-                    _onDisposed.Invoke();
-                }
-
-                protected abstract void OnExecuting(IMyFunctionalBlock functionalBlock);
-
-                private void Reset()
-                    => _functionalBlockIndex = 0;
-
-                private readonly FunctionalBlockManager _owner;
-
-                private readonly Action _onDisposed;
-
-                private int _functionalBlockIndex;
-            }
-
-            private sealed class DisableOperation : FunctionalBlockOperationBase
-            {
-                public DisableOperation(FunctionalBlockManager owner, Action onDisposed)
+                public DisableOperation(BlockManagerBase<IMyFunctionalBlock> owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyFunctionalBlock functionalBlock)
                     => functionalBlock.Enabled = false;
             }
 
-            private sealed class EnableOperation : FunctionalBlockOperationBase
+            private sealed class EnableOperation : OnDockOperationBase
             {
-                public EnableOperation(FunctionalBlockManager owner, Action onDisposed)
+                public EnableOperation(BlockManagerBase<IMyFunctionalBlock> owner, Action onDisposed)
                     : base(owner, onDisposed) { }
 
                 protected override void OnExecuting(IMyFunctionalBlock functionalBlock)

@@ -27,190 +27,190 @@ namespace AutomatedDockingProcedures.Test
 
         #endregion Test Context
 
-        #region AddConnector() Tests
+        #region AddBlock() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void AddConnector_Always_AddsConnector(int existingConnectorCount)
+        public void AddBlock_Always_AddsBlock(int existingBlockCount)
         {
             var testContext = new TestContext();
 
-            var mockExistingConnectors = Enumerable.Repeat(0, existingConnectorCount)
+            var mockExistingBlocks = Enumerable.Repeat(0, existingBlockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
             
-            foreach(var mockExistingConnector in mockExistingConnectors)
-                testContext.Uut.AddConnector(mockExistingConnector.Object);
+            foreach(var mockExistingBlock in mockExistingBlocks)
+                testContext.Uut.AddBlock(mockExistingBlock.Object);
 
-            var mockConnector = new Mock<IMyShipConnector>();
+            var mockBlock = new Mock<IMyShipConnector>();
 
-            testContext.Uut.AddConnector(mockConnector.Object);
+            testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.Connectors.ShouldContain(mockConnector.Object);
+            testContext.Uut.Blocks.ShouldContain(mockBlock.Object);
         }
 
-        #endregion AddConnector() Tests
+        #endregion AddBlock() Tests
 
-        #region ClearConnectors() Tests
+        #region ClearBlocks() Tests
 
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]
-        public void ClearConnectors_Always_ClearsConnectors(int connectorCount)
+        public void ClearBlocks_Always_ClearsBlocks(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockConnectors = Enumerable.Repeat(0, connectorCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
 
-            foreach (var mockConnector in mockConnectors)
-                testContext.Uut.AddConnector(mockConnector.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.ClearConnectors();
+            testContext.Uut.ClearBlocks();
 
-            testContext.Uut.Connectors.ShouldBeEmpty();
+            testContext.Uut.Blocks.ShouldBeEmpty();
         }
 
-        #endregion ClearConnectors() Tests
+        #endregion ClearBlocks() Tests
 
-        #region MakeConnectOperation() Tests
+        #region MakeOnDockingOperation() Tests
 
         [Test]
-        public void MakeConnectOperation_ConnectorsIsEmpty_CompletesImmediately()
+        public void MakeOnDockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeConnectOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeConnectOperation_ConnectorsIsNotEmpty_ConnectsEachConnector(int connectorCount)
+        public void MakeOnDockingOperation_BlocksIsNotEmpty_ConnectsEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockConnectors = Enumerable.Repeat(0, connectorCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
 
-            foreach (var mockConnector in mockConnectors)
-                testContext.Uut.AddConnector(mockConnector.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeConnectOperation()
-                .ShouldRunToCompletionIn(connectorCount);
+            testContext.Uut.MakeOnDockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockConnectors.ForEach(mockConnector =>
-                mockConnector.ShouldHaveReceived(x => x.Connect()));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceived(x => x.Connect()));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeConnectOperation_OperationIsDisposed_RecyclesOperation(int connectorCount)
+        public void MakeOnDockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockConnectors = Enumerable.Repeat(0, connectorCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
 
-            foreach (var mockConnector in mockConnectors)
-                testContext.Uut.AddConnector(mockConnector.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeConnectOperation();
-            result.ShouldRunToCompletionIn(connectorCount);
+            var result = testContext.Uut.MakeOnDockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockConnectorInvocations = mockConnectors
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockConnectors.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeConnectOperation()
+            testContext.Uut.MakeOnDockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(connectorCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach(var i in Enumerable.Range(0, mockConnectors.Length))
+            foreach(var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockConnectors[i].Invocations.Count.ShouldBe(mockConnectorInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockConnectors[i].Invocations.Count))
-                    mockConnectors[i].Invocations[j].ShouldBe(mockConnectorInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeConnectOperation() Tests
+        #endregion MakeOnDockingOperation() Tests
 
-        #region MakeDisconnectOperation() Tests
+        #region MakeOnUndockingOperation() Tests
 
         [Test]
-        public void MakeDisconnectOperation_ConnectorsIsEmpty_CompletesImmediately()
+        public void MakeOnUndockingOperation_BlocksIsEmpty_CompletesImmediately()
         {
             var testContext = new TestContext();
 
-            testContext.Uut.MakeDisconnectOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldRunToCompletionIn(1);
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDisconnectOperation_ConnectorsIsNotEmpty_DisconnectsEachConnector(int connectorCount)
+        public void MakeOnUndockingOperation_BlocksIsNotEmpty_DisconnectsEachBlock(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockConnectors = Enumerable.Repeat(0, connectorCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
 
-            foreach (var mockConnector in mockConnectors)
-                testContext.Uut.AddConnector(mockConnector.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            testContext.Uut.MakeDisconnectOperation()
-                .ShouldRunToCompletionIn(connectorCount);
+            testContext.Uut.MakeOnUndockingOperation()
+                .ShouldRunToCompletionIn(blockCount);
 
-            mockConnectors.ForEach(mockConnector =>
-                mockConnector.ShouldHaveReceived(x => x.Disconnect()));
+            mockBlocks.ForEach(mockBlock =>
+                mockBlock.ShouldHaveReceived(x => x.Disconnect()));
         }
 
         [TestCase(1)]
         [TestCase(10)]
-        public void MakeDisconnectOperation_OperationIsDisposed_RecyclesOperation(int connectorCount)
+        public void MakeOnUndockingOperation_OperationIsDisposed_RecyclesOperation(int blockCount)
         {
             var testContext = new TestContext();
 
-            var mockConnectors = Enumerable.Repeat(0, connectorCount)
+            var mockBlocks = Enumerable.Repeat(0, blockCount)
                 .Select(_ => new Mock<IMyShipConnector>())
                 .ToArray();
 
-            foreach (var mockConnector in mockConnectors)
-                testContext.Uut.AddConnector(mockConnector.Object);
+            foreach (var mockBlock in mockBlocks)
+                testContext.Uut.AddBlock(mockBlock.Object);
 
-            var result = testContext.Uut.MakeDisconnectOperation();
-            result.ShouldRunToCompletionIn(connectorCount);
+            var result = testContext.Uut.MakeOnUndockingOperation();
+            result.ShouldRunToCompletionIn(blockCount);
 
-            var mockConnectorInvocations = mockConnectors
+            var mockBlockInvocations = mockBlocks
                 .Select(x => x.Invocations.ToArray())
                 .ToArray();
 
-            mockConnectors.ForEach(x => x
+            mockBlocks.ForEach(x => x
                 .Invocations.Clear());
 
-            testContext.Uut.MakeDisconnectOperation()
+            testContext.Uut.MakeOnUndockingOperation()
                 .ShouldBeSameAs(result);
 
-            result.ShouldRunToCompletionIn(connectorCount);
+            result.ShouldRunToCompletionIn(blockCount);
 
-            foreach (var i in Enumerable.Range(0, mockConnectors.Length))
+            foreach (var i in Enumerable.Range(0, mockBlocks.Length))
             {
-                mockConnectors[i].Invocations.Count.ShouldBe(mockConnectorInvocations[i].Length);
-                foreach (var j in Enumerable.Range(0, mockConnectors[i].Invocations.Count))
-                    mockConnectors[i].Invocations[j].ShouldBe(mockConnectorInvocations[i][j]);
+                mockBlocks[i].Invocations.Count.ShouldBe(mockBlockInvocations[i].Length);
+                foreach (var j in Enumerable.Range(0, mockBlocks[i].Invocations.Count))
+                    mockBlocks[i].Invocations[j].ShouldBe(mockBlockInvocations[i][j]);
             }
         }
 
-        #endregion MakeDisconnectOperation() Tests
+        #endregion MakeOnUndockingOperation() Tests
     }
 }
