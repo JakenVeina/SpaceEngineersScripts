@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="modinfo.sbmi" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="..\Mixins\Mixins.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
