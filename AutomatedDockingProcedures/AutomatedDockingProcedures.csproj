@@ -120,6 +120,12 @@
     <Compile Include="DockingManagerSettings.cs" />
     <Compile Include="DockingManagerSettingsProvider.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="metadata.mod" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="modinfo.sbmi" />
+  </ItemGroup>
   <Import Project="..\Mixins\Mixins.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
