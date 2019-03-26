@@ -495,5 +495,206 @@ namespace AutomatedDockingProcedures.Test
         }
 
         #endregion MakeUndockOperation() Tests
+
+        #region MakeToggleOperation() Tests
+
+        [Test]
+        public void MakeToggleOperation_ConnectorsIsEmpty_LogsError()
+        {
+            var testContext = new TestContext();
+
+            testContext.Uut.MakeToggleOperation()
+                .ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 1);
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("failed") && y.ToLower().Contains("connectors"))));
+
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
+
+            testContext.MockBatteryBlockManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockFunctionalBlockManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockGasTankManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockLandingGearManager
+                .Invocations.ShouldBeEmpty();
+        }
+
+        [TestCase(MyShipConnectorStatus.Connected)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connected)]
+        [TestCase(MyShipConnectorStatus.Connected, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connected, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Connected, MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Connected, MyShipConnectorStatus.Connected, MyShipConnectorStatus.Connected)]
+        public void MakeToggleOperation_AnyConnectorIsConnected_SchedulesUndockingOperations(params MyShipConnectorStatus[] connectorStatuses)
+        {
+            var testContext = new TestContext();
+
+            foreach (var connectorStatus in connectorStatuses)
+                testContext.AddMockConnector(connectorStatus);
+
+            testContext.Uut.MakeToggleOperation()
+                .ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 7);
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("complete"))));
+
+            testContext.MockBatteryBlockManager
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
+            testContext.MockBatteryBlockManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+
+            testContext.MockConnectorManager
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+
+            testContext.MockFunctionalBlockManager
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
+            testContext.MockFunctionalBlockManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+
+            testContext.MockGasTankManager
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
+            testContext.MockGasTankManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+
+            testContext.MockLandingGearManager
+                .ShouldHaveReceived(x => x.MakeOnUndockingOperation(), 1);
+            testContext.MockLandingGearManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .ShouldHaveReceived(x => x(It.IsAny<IBackgroundOperation>()), 5);
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .Invocations
+                .Where(x => x.Method.Name == nameof(Action.Invoke))
+                .Select(x => x.Arguments[0])
+                .ShouldBe(Enumerable.Empty<object>()
+                    .Append(testContext.MockFunctionalBlocksOnDockingOperation.Object)
+                    .Append(testContext.MockGasTanksOnUndockingOperation.Object)
+                    .Append(testContext.MockBatteryBlocksOnUndockingOperation.Object)
+                    .Append(testContext.MockLandingGearsOnUndockingOperation.Object)
+                    .Append(testContext.MockConnectorsOnUndockingOperation.Object));
+        }
+
+        [TestCase(MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Connectable)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connectable, MyShipConnectorStatus.Connectable)]
+        public void MakeToggleOperation_NoConnectorIsConnectedAndAnyConnectorIsConnectable_SchedulesDockingOperations(params MyShipConnectorStatus[] connectorStatuses)
+        {
+            var testContext = new TestContext();
+
+            foreach (var connectorStatus in connectorStatuses)
+                testContext.AddMockConnector(connectorStatus);
+
+            testContext.Uut.MakeToggleOperation()
+                .ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 7);
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("complete"))));
+
+            testContext.MockBatteryBlockManager
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
+            testContext.MockBatteryBlockManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockConnectorManager
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockFunctionalBlockManager
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
+            testContext.MockFunctionalBlockManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockGasTankManager
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
+            testContext.MockGasTankManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockLandingGearManager
+                .ShouldHaveReceived(x => x.MakeOnDockingOperation(), 1);
+            testContext.MockLandingGearManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .ShouldHaveReceived(x => x(It.IsAny<IBackgroundOperation>()), 5);
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .Invocations
+                .Where(x => x.Method.Name == nameof(Action.Invoke))
+                .Select(x => x.Arguments[0])
+                .ShouldBe(Enumerable.Empty<object>()
+                    .Append(testContext.MockConnectorsOnDockingOperation.Object)
+                    .Append(testContext.MockLandingGearsOnDockingOperation.Object)
+                    .Append(testContext.MockBatteryBlocksOnDockingOperation.Object)
+                    .Append(testContext.MockGasTanksOnDockingOperation.Object)
+                    .Append(testContext.MockFunctionalBlocksOnUndockingOperation.Object));
+        }
+
+        [TestCase(MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Unconnected)]
+        [TestCase(MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Unconnected, MyShipConnectorStatus.Unconnected)]
+        public void MakeToggleOperation_Otherwise_LogsError(params MyShipConnectorStatus[] connectorStatuses)
+        {
+            var testContext = new TestContext();
+
+            foreach (var connectorStatus in connectorStatuses)
+                testContext.AddMockConnector(connectorStatus);
+
+            testContext.Uut.MakeToggleOperation()
+                .ShouldRunToCompletionIn(testContext.MockBackgroundWorker, 1);
+
+            testContext.MockLogger
+                .ShouldHaveReceived(x => x.AddLine(It.Is<string>(y => y.ToLower().Contains("failed") && y.ToLower().Contains("docked") && y.ToLower().Contains("dockable"))));
+
+            testContext.MockBackgroundWorker
+                .MockSubOperationScheduler
+                .ShouldNotHaveReceived(x => x(It.IsAny<IBackgroundOperation>()));
+
+            testContext.MockBatteryBlockManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnDockingOperation());
+            testContext.MockConnectorManager
+                .ShouldNotHaveReceived(x => x.MakeOnUndockingOperation());
+
+            testContext.MockFunctionalBlockManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockGasTankManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockLandingGearManager
+                .Invocations.ShouldBeEmpty();
+        }
+
+        #endregion MakeUndockOperation() Tests
     }
 }

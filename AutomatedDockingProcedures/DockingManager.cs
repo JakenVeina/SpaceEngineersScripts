@@ -11,6 +11,8 @@ namespace IngameScript
             IBackgroundOperation MakeDockOperation();
 
             IBackgroundOperation MakeUndockOperation();
+
+            IBackgroundOperation MakeToggleOperation();
         }
 
         public class DockingManager : IDockingManager
@@ -29,6 +31,9 @@ namespace IngameScript
                 _undockOperationPool = new ObjectPool<UndockOperation>(onFinished
                     => new UndockOperation(this, onFinished));
 
+                _toggleOperationPool = new ObjectPool<ToggleOperation>(onFinished
+                    => new ToggleOperation(this, onFinished));
+
                 _logger = logger;
                 _batteryBlockManager = batteryBlockManager;
                 _connectorManager = connectorManager;
@@ -43,9 +48,14 @@ namespace IngameScript
             public IBackgroundOperation MakeUndockOperation()
                 => _undockOperationPool.Get();
 
+            public IBackgroundOperation MakeToggleOperation()
+                => _toggleOperationPool.Get();
+
             private readonly ObjectPool<DockOperation> _dockOperationPool;
 
             private readonly ObjectPool<UndockOperation> _undockOperationPool;
+
+            private readonly ObjectPool<ToggleOperation> _toggleOperationPool;
 
             private readonly ILogger _logger;
 
@@ -170,7 +180,11 @@ namespace IngameScript
 
                     var anyConnected = false;
                     for (var i = 0; i < Owner._connectorManager.Blocks.Count; ++i)
-                        anyConnected |= (Owner._connectorManager.Blocks[i].Status == MyShipConnectorStatus.Connected);
+                        if (Owner._connectorManager.Blocks[i].Status == MyShipConnectorStatus.Connected)
+                        {
+                            anyConnected = true;
+                            break;
+                        }
 
                     if (!anyConnected)
                     {
@@ -189,6 +203,71 @@ namespace IngameScript
 
                 protected internal override void OnCompleted()
                     => Owner._logger.AddLine(" - Undocking complete");
+            }
+
+            private sealed class ToggleOperation : DockingOperationBase
+            {
+                public ToggleOperation(DockingManager owner, Action onDisposed)
+                    : base(owner, onDisposed) { }
+
+                internal protected override BackgroundOperationResult OnStarting(Action<IBackgroundOperation> subOperationScheduler)
+                {
+                    if (Owner._connectorManager.Blocks.Count == 0)
+                    {
+                        Owner._logger.AddLine(" - Toggle failed: No Connectors loaded");
+                        return BackgroundOperationResult.Completed;
+                    }
+
+                    var anyConnected = false;
+                    var anyConnectable = false;
+                    for (var i = 0; i < Owner._connectorManager.Blocks.Count; ++i)
+                    {
+                        var status = Owner._connectorManager.Blocks[i].Status;
+
+                        if (status == MyShipConnectorStatus.Connected)
+                        {
+                            anyConnected = true;
+                            break;
+                        }
+
+                        anyConnectable |= (status == MyShipConnectorStatus.Connectable);
+                    }
+
+                    if (anyConnected)
+                    {
+                        _isDocking = false;
+                        Owner._logger.AddLine("Executing Undocking Procedure...");
+                        subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeOnUndockingOperation());
+                        subOperationScheduler.Invoke(Owner._gasTankManager.MakeOnUndockingOperation());
+                        subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeOnUndockingOperation());
+                        subOperationScheduler.Invoke(Owner._landingGearManager.MakeOnUndockingOperation());
+                        subOperationScheduler.Invoke(Owner._connectorManager.MakeOnUndockingOperation());
+                    }
+                    else if(anyConnectable)
+                    {
+                        _isDocking = true;
+                        Owner._logger.AddLine("Executing Docking Procedure...");
+                        subOperationScheduler.Invoke(Owner._connectorManager.MakeOnDockingOperation());
+                        subOperationScheduler.Invoke(Owner._landingGearManager.MakeOnDockingOperation());
+                        subOperationScheduler.Invoke(Owner._batteryBlockManager.MakeOnDockingOperation());
+                        subOperationScheduler.Invoke(Owner._gasTankManager.MakeOnDockingOperation());
+                        subOperationScheduler.Invoke(Owner._functionalBlockManager.MakeOnDockingOperation());
+                    }
+                    else
+                    {
+                        Owner._logger.AddLine(" - Toggle failed: Ship is not currently docked or dockable");
+                        return BackgroundOperationResult.Completed;
+                    }
+
+                    return BackgroundOperationResult.NotCompleted;
+                }
+
+                protected internal override void OnCompleted()
+                    => Owner._logger.AddLine(_isDocking
+                        ? " - Docking complete"
+                        : " - Undocking complete");
+
+                private bool _isDocking;
             }
         }
     }

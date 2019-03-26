@@ -25,8 +25,10 @@ This script supports the following commands (I.E. arguments):
     - Enables "Stockpile" mode on all Gas Tanks
 - `undock`
   - Reverses all operations performed by the "dock" command
+- `toggle`
+  - Performs either a "dock" command or an "undock" command, depending on the current state of "managed" Connectors
  
- ### Script Configuration
+ ## Script Configuration
  
  This script supports the following configuration settings, applied through the "Custom Data" setting of the host Programmable Block. Each setting should be written on a separate line of the "Custom Data" text.
  

@@ -124,6 +124,8 @@
     <Content Include="metadata.mod" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="steamdeploy.bat" />
+    <None Include="steamdeploy.vdf" />
     <None Include="modinfo.sbmi" />
     <None Include="README.md" />
   </ItemGroup>

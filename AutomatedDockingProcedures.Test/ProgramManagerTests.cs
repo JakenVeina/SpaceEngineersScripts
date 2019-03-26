@@ -32,7 +32,10 @@ namespace AutomatedDockingProcedures.Test
                     .Returns(() => MockDockOperation.Object);
                 MockDockingManager
                     .Setup(x => x.MakeUndockOperation())
-                    .Returns(() => MockUndockOperation.Object);                    
+                    .Returns(() => MockUndockOperation.Object);
+                MockDockingManager
+                    .Setup(x => x.MakeToggleOperation())
+                    .Returns(() => MockToggleOperation.Object);
 
                 MockEchoProvider = new Mock<IEchoProvider>();
 
@@ -56,6 +59,8 @@ namespace AutomatedDockingProcedures.Test
                 MockDockOperation = new Mock<IBackgroundOperation>();
 
                 MockUndockOperation = new Mock<IBackgroundOperation>();
+
+                MockToggleOperation = new Mock<IBackgroundOperation>();
             }
 
             public readonly Mock<IBackgroundWorker> MockBackgroundWorker;
@@ -77,6 +82,8 @@ namespace AutomatedDockingProcedures.Test
             public readonly Mock<IBackgroundOperation> MockDockOperation;
 
             public readonly Mock<IBackgroundOperation> MockUndockOperation;
+
+            public readonly Mock<IBackgroundOperation> MockToggleOperation;
         }
 
         #endregion Test Context
@@ -152,6 +159,29 @@ namespace AutomatedDockingProcedures.Test
                 .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
         }
 
+        [TestCase("toggle")]
+        public void Run_ArgumentIsToggle_SchedulesToggleOperations(string argument)
+        {
+            var testContext = new TestContext();
+
+            testContext.Uut.Run(argument);
+
+            testContext.MockConfigManager
+                .Invocations.ShouldBeEmpty();
+
+            testContext.MockDockingManager
+                .ShouldHaveReceived(x => x.MakeToggleOperation());
+
+            testContext.MockBackgroundWorker
+                .ShouldHaveReceived(x => x.ScheduleOperation(testContext.MockToggleOperation.Object));
+
+            testContext.MockGridProgramRuntimeInfo
+                .ShouldHaveReceivedSet(x => x.UpdateFrequency = It.Is<UpdateFrequency>(y => y.HasFlag(UpdateFrequency.Once)));
+
+            testContext.MockLogger
+                .ShouldNotHaveReceived(x => x.AddLine(It.IsAny<string>()));
+        }
+
         [TestCase("")]
         [TestCase("run")]
         public void Run_ArgumentIsRun_ExecutesOperations(string argument)
@@ -203,8 +233,9 @@ namespace AutomatedDockingProcedures.Test
         [TestCase("reload",           "RenderedLog2")]
         [TestCase("dock",             "RenderedLog3")]
         [TestCase("undock",           "RenderedLog4")]
-        [TestCase("run",              "RenderedLog5")]
-        [TestCase("",                 "RenderedLog6")]
+        [TestCase("toggle",           "RenderedLog5")]
+        [TestCase("run",              "RenderedLog6")]
+        [TestCase("",                 "RenderedLog7")]
         public void Run_Always_EchoesLog(string argument, string renderedLog)
         {
             var testContext = new TestContext()

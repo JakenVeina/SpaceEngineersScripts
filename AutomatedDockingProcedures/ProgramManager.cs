@@ -57,6 +57,13 @@ namespace IngameScript
                 @this._gridProgramRuntimeInfo.UpdateFrequency |= UpdateFrequency.Once;
             }
 
+            private static void DoToggle(ProgramManager @this)
+            {
+                @this._backgroundWorker.ScheduleOperation(@this._dockingManager.MakeToggleOperation());
+
+                @this._gridProgramRuntimeInfo.UpdateFrequency |= UpdateFrequency.Once;
+            }
+
             private static void DoRun(ProgramManager @this)
                 => @this._backgroundWorker.ExecuteOperations();
 
@@ -78,6 +85,7 @@ namespace IngameScript
                     { "reload", DoReload },
                     { "dock",   DoDock   },
                     { "undock", DoUndock },
+                    { "toggle", DoToggle },
                     { "run",    DoRun    },
                     { "",       DoRun    }
                 };
