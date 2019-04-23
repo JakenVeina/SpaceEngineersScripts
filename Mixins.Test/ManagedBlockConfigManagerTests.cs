@@ -101,24 +101,24 @@ namespace Mixins.Test
         public static readonly string[][][] ValidConfigDatas
             = new[]
             {
-                new[] { new[] { "blockTag1", "option1"                     }                                                                     },
-                new[] { new[] { "blockTag2", "option2", "param1"           }                                                                     },
-                new[] { new[] { "blockTag3", "option3", "param2", "param3" }                                                                     },
-                new[] { new[] { "blockTag4", "option4"                     }, new[] { "blockTag4", "option5" }                                   },
-                new[] { new[] { "blockTag5", "option6"                     }, new[] { "blockTag5", "option7" }, new[] { "blockTag5", "option8" } },
+                new[] { new[] { "[blockTag1]", "option1"                     }                                                                     },
+                new[] { new[] { "[blockTag2]", "option2", "param1"           }                                                                     },
+                new[] { new[] { "[blockTag3]", "option3", "param2", "param3" }                                                                     },
+                new[] { new[] { "[blockTag4]", "option4"                     }, new[] { "[blockTag4]", "option5" }                                   },
+                new[] { new[] { "[blockTag5]", "option6"                     }, new[] { "[blockTag5]", "option7" }, new[] { "[blockTag5]", "option8" } },
             };
 
         public static readonly string[][][] InvalidConfigDatas
             = new[]
             {
-                new[] { new[] { "blockTag6" }                                               },
-                new[] { new[] { "blockTag8" }, new[] { "blockTag8" }                        },
-                new[] { new[] { "blockTag8" }, new[] { "blockTag8" }, new[] { "blockTag8" } },
+                new[] { new[] { "[blockTag6]" }                                               },
+                new[] { new[] { "[blockTag8]" }, new[] { "[blockTag8]" }                        },
+                new[] { new[] { "[blockTag8]" }, new[] { "[blockTag8]" }, new[] { "[blockTag8]" } },
             };
 
         public static readonly TestCaseData[] ValidBlockTagAndConfigDataTestCases
             = ValidConfigDatas
-                .Select(configData => new TestCaseData(new object[] { configData[0][0], configData })
+                .Select(configData => new TestCaseData(new object[] { ExtractBlockTag(configData[0][0]), configData })
                     .SetName($"{{m}}({{0}}, \"{Regex.Escape(BuildConfig(configData))}\")"))
                 .ToArray();
 
@@ -130,7 +130,7 @@ namespace Mixins.Test
 
         public static readonly TestCaseData[] ValidBlockTagAndInvalidConfigDataTestCases
             = InvalidConfigDatas
-                .Select(configData => new TestCaseData(new object[] { configData[0][0], configData })
+                .Select(configData => new TestCaseData(new object[] { ExtractBlockTag(configData[0][0]), configData })
                     .SetName($"{{m}}({{0}}, \"{Regex.Escape(BuildConfig(configData))}\")"))
                 .ToArray();
 
@@ -140,6 +140,15 @@ namespace Mixins.Test
 
         public static string BuildConfigLine(string[] configParams)
             => string.Join(":", configParams);
+
+        public static string ExtractBlockTag(string linePiece)
+        {
+            var match = Regex.Match(linePiece, @"^\[(?<blockTag>\w+)\]$");
+
+            return match.Success
+                ? match.Groups["blockTag"].Value
+                : null;
+        }
 
         #endregion Test Cases
 

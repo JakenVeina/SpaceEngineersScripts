@@ -197,7 +197,7 @@ namespace IngameScript
                     {
                         _linePieces = Line.Split(_linePieceSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-                        if ((_linePieces.Length == 0) || (_linePieces[0] != _owner._managerSettingsProvider.Settings.BlockTag))
+                        if ((_linePieces.Length == 0) || (_linePieces[0] != $"[{_owner._managerSettingsProvider.Settings.BlockTag}]"))
                             return Complete();
 
                         if (_linePieces.Length < 2)
