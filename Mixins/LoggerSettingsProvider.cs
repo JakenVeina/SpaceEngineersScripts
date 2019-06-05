@@ -32,7 +32,7 @@ namespace IngameScript
                         if ((configLine.ParamCount != 1) 
                                 || !int.TryParse(configLine.GetParam(0), out maxLogSize)
                                 || (maxLogSize < 0))
-                            return ParseResult.FromError("Usage: \"max-log-size:[MaxLogSize (>= 0) (lines)]\"");
+                            return ParseResult.FromError("Usage: \"max-log-size:<MaxLogSize>\" (>= 0) (lines)");
                         _settings.MaxLogSize = maxLogSize;
                         return ParseResult.Success;
 

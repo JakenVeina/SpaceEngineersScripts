@@ -34,7 +34,7 @@ namespace IngameScript
                 {
                     case "block-tag":
                         if (configLine.ParamCount != 1)
-                            return ParseResult.FromError("Usage: \"block-tag:[BlockTag]\"");
+                            return ParseResult.FromError("Usage: \"block-tag:<BlockTag>\"");
                         _settings.BlockTag = configLine.GetParam(0);
                         return ParseResult.Success;
 

@@ -42,7 +42,7 @@ namespace IngameScript
                         if ((configLine.ParamCount != 1) 
                                 || !int.TryParse(configLine.GetParam(0), out instructionsPerTick)
                                 || (instructionsPerTick < 1))
-                            return ParseResult.FromError("Usage: \"instructions-per-tick:[InstructionsPerTick (> 0)]\"");
+                            return ParseResult.FromError("Usage: \"instructions-per-tick:<InstructionsPerTick>\" (> 0)");
                         _settings.InstructionsPerTick = instructionsPerTick;
                         return ParseResult.Success;
 

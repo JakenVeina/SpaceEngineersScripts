@@ -30,13 +30,13 @@ namespace IngameScript
                 {
                     case "manage":
                         if (configLine.ParamCount != 0)
-                            return ParseResult.FromError("Usage: \"[BlockTag]:manage\"");
+                            return ParseResult.FromError("Usage: \"[<BlockTag>]:manage\"");
                         _settings.Manage = true;
                         return ParseResult.Success;
 
                     case "ignore":
                         if (configLine.ParamCount != 0)
-                            return ParseResult.FromError("Usage: \"[BlockTag]:ignore\"");
+                            return ParseResult.FromError("Usage: \"[<BlockTag>]:ignore\"");
                         _settings.Ignore = true;
                         return ParseResult.Success;
 

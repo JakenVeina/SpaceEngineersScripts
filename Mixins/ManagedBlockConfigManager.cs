@@ -202,7 +202,7 @@ namespace IngameScript
 
                         if (_linePieces.Length < 2)
                         {
-                            _owner._logger.AddLine($"Config Error:\n  Block:\"{Block.CustomName}\"\n  Line: \"{Line}\"\n  Usage: \"<BlockTag>:<option>[:<parameter>...]");
+                            _owner._logger.AddLine($"Config Error:\n  Block:\"{Block.CustomName}\"\n  Line: \"{Line}\"\n  Usage: \"[<BlockTag>]:<option>{{:<parameter>...}}");
                             return Complete();
                         }
 

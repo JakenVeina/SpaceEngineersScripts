@@ -32,7 +32,7 @@ namespace IngameScript
                         if ((configLine.ParamCount != 1)
                                 || !int.TryParse(configLine.GetParam(0), out manageIntervalMilliseconds)
                                 || (manageIntervalMilliseconds < 1))
-                            return ParseResult.FromError("Usage: \"manage-interval:[ManageInterval (> 0) (ms)]\"");
+                            return ParseResult.FromError("Usage: \"manage-interval:<ManageInterval>\" (> 0) (ms)");
                         _settings.ManageInterval = TimeSpan.FromMilliseconds(manageIntervalMilliseconds);
                         return ParseResult.Success;
 

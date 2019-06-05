@@ -38,7 +38,7 @@ namespace IngameScript
                         if ((configLine.ParamCount != 1)
                                 || !int.TryParse(configLine.GetParam(0), out autoCloseIntervalMilliseconds)
                                 || (autoCloseIntervalMilliseconds < 1))
-                            return ParseResult.FromError("Usage: \"[BlockTag]:auto-close-interval:[AutoCloseInterval (> 0) (ms)]\"");
+                            return ParseResult.FromError("Usage: \"<BlockTag>:auto-close-interval:<AutoCloseInterval>\" (> 0) (ms)");
                         _settings.AutoCloseInterval = TimeSpan.FromMilliseconds(autoCloseIntervalMilliseconds);
                         return ParseResult.Success;
 
